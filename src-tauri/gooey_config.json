@@ -1,0 +1,1287 @@
+{
+  "language": "english",
+  "target": "'/home/smy/miniconda3/envs/dev/bin/python' -u 'train_dreambooth.py'",
+  "suppress_gooey_flag": false,
+  "program_name": "dreambooth",
+  "program_description": "Simple example of a training script.",
+  "sidebar_title": "Actions",
+  "default_size": [
+    610,
+    530
+  ],
+  "auto_start": false,
+  "show_advanced": true,
+  "run_validators": true,
+  "encoding": "utf-8",
+  "show_stop_warning": true,
+  "show_success_modal": true,
+  "show_failure_modal": true,
+  "force_stop_is_error": true,
+  "poll_external_updates": false,
+  "return_to_config": false,
+  "show_restart_button": true,
+  "requires_shell": true,
+  "menu": [],
+  "clear_before_run": false,
+  "fullscreen": false,
+  "use_legacy_titles": true,
+  "num_required_cols": 2,
+  "num_optional_cols": 2,
+  "manual_start": false,
+  "monospace_display": false,
+  "image_dir": "::gooey/default",
+  "language_dir": "/home/smy/miniconda3/envs/dev/lib/python3.9/site-packages/gooey/languages",
+  "progress_regex": null,
+  "progress_expr": null,
+  "hide_progress_msg": false,
+  "timing_options": {
+    "show_time_remaining": false,
+    "hide_time_remaining_on_complete": true
+  },
+  "disable_progress_bar_animation": false,
+  "disable_stop_button": false,
+  "navigation": "SIDEBAR",
+  "show_sidebar": false,
+  "tabbed_groups": true,
+  "group_by_type": true,
+  "body_bg_color": "#f0f0f0",
+  "header_bg_color": "#ffffff",
+  "header_height": 80,
+  "header_show_title": true,
+  "header_show_subtitle": true,
+  "header_image_center": false,
+  "footer_bg_color": "#f0f0f0",
+  "sidebar_bg_color": "#f2f2f2",
+  "terminal_panel_color": "#F0F0F0",
+  "terminal_font_color": "#000000",
+  "terminal_font_family": null,
+  "terminal_font_weight": 400,
+  "terminal_font_size": null,
+  "richtext_controls": false,
+  "error_color": "#ea7878",
+  "layout": "standard",
+  "widgets": {
+    "dreambooth": {
+      "command": "::gooey/default",
+      "name": "dreambooth",
+      "help": null,
+      "description": "",
+      "contents": [
+        {
+          "name": "Basic",
+          "items": [
+            {
+              "id": "--training_folder",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": true,
+              "data": {
+                "display_name": "training_folder",
+                "help": "Path to a folder that store all training data.",
+                "required": true,
+                "nargs": "",
+                "commands": [
+                  "--training_folder"
+                ],
+                "choices": [],
+                "default": "/home/smy/Downloads/cyan",
+                "dest": "training_folder"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "user_input and not user_input.isspace()",
+                  "message": "This field is required"
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--pretrained_model_name_or_path",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": true,
+              "data": {
+                "display_name": "pretrained_model_name_or_path",
+                "help": "Path to pretrained model or model identifier from huggingface.co/models.",
+                "required": true,
+                "nargs": "",
+                "commands": [
+                  "--pretrained_model_name_or_path"
+                ],
+                "choices": [],
+                "default": "hakurei/waifu-diffusion",
+                "dest": "pretrained_model_name_or_path"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "user_input and not user_input.isspace()",
+                  "message": "This field is required"
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--instance_data_dir",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": true,
+              "data": {
+                "display_name": "instance_data_dir",
+                "help": "A folder containing the training data of instance images.",
+                "required": true,
+                "nargs": "",
+                "commands": [
+                  "--instance_data_dir"
+                ],
+                "choices": [],
+                "default": "/home/smy/Downloads/cyan/instance",
+                "dest": "instance_data_dir"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "user_input and not user_input.isspace()",
+                  "message": "This field is required"
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--instance_prompt",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "instance_prompt",
+                "help": "The prompt with identifier specifing the instance",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--instance_prompt"
+                ],
+                "choices": [],
+                "default": "a sks girl",
+                "dest": "instance_prompt"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--resolution",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "resolution",
+                "help": "The resolution for input images, all the images in the train/validation dataset will be resized to this resolution",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--resolution"
+                ],
+                "choices": [],
+                "default": 512,
+                "dest": "resolution"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--auth_token",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": true,
+              "data": {
+                "display_name": "auth_token",
+                "help": "Huggingface auth token to access model, https://huggingface.co/settings/tokens",
+                "required": true,
+                "nargs": "",
+                "commands": [
+                  "--auth_token"
+                ],
+                "choices": [],
+                "default": "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",
+                "dest": "auth_token"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "user_input and not user_input.isspace()",
+                  "message": "This field is required"
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            }
+          ],
+          "groups": [],
+          "description": "Basic dreambooth training config.",
+          "options": {
+            "label_color": "#000000",
+            "description_color": "#363636",
+            "legacy": {
+              "required_cols": 2,
+              "optional_cols": 2
+            },
+            "columns": 2,
+            "padding": 10,
+            "show_border": false
+          }
+        },
+        {
+          "name": "Prior Preservation",
+          "items": [
+            {
+              "id": "--class_data_dir",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "class_data_dir",
+                "help": "A folder containing the training data of class images.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--class_data_dir"
+                ],
+                "choices": [],
+                "default": null,
+                "dest": "class_data_dir"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--class_prompt",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "class_prompt",
+                "help": "The prompt to specify images in the same class as provided intance images.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--class_prompt"
+                ],
+                "choices": [],
+                "default": null,
+                "dest": "class_prompt"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--with_prior_preservation",
+              "type": "CheckBox",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "with_prior_preservation",
+                "help": "Flag to add prior perservation loss.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--with_prior_preservation"
+                ],
+                "choices": [],
+                "default": false,
+                "dest": "with_prior_preservation"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--prior_loss_weight",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "prior_loss_weight",
+                "help": "The weight of prior preservation loss.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--prior_loss_weight"
+                ],
+                "choices": [],
+                "default": 1.0,
+                "dest": "prior_loss_weight"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--num_class_images",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "num_class_images",
+                "help": "Minimal class images for prior perversation loss. If not have enough images, additional images will be sampled with class_prompt.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--num_class_images"
+                ],
+                "choices": [],
+                "default": 100,
+                "dest": "num_class_images"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            }
+          ],
+          "groups": [],
+          "description": "Prior-preservation is used to avoid overfitting and language-drift.",
+          "options": {
+            "label_color": "#000000",
+            "description_color": "#363636",
+            "legacy": {
+              "required_cols": 2,
+              "optional_cols": 2
+            },
+            "columns": 2,
+            "padding": 10,
+            "show_border": false
+          }
+        },
+        {
+          "name": "Training Config",
+          "items": [
+            {
+              "id": "--train_batch_size",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "train_batch_size",
+                "help": "Batch size (per device) for the training dataloader.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--train_batch_size"
+                ],
+                "choices": [],
+                "default": 1,
+                "dest": "train_batch_size"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--sample_batch_size",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "sample_batch_size",
+                "help": "Batch size (per device) for sampling images.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--sample_batch_size"
+                ],
+                "choices": [],
+                "default": 1,
+                "dest": "sample_batch_size"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--num_train_epochs",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "num_train_epochs",
+                "help": null,
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--num_train_epochs"
+                ],
+                "choices": [],
+                "default": 1,
+                "dest": "num_train_epochs"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--max_train_steps",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "max_train_steps",
+                "help": "Total number of training steps to perform.  If provided, overrides num_train_epochs.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--max_train_steps"
+                ],
+                "choices": [],
+                "default": 800,
+                "dest": "max_train_steps"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--gradient_accumulation_steps",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "gradient_accumulation_steps",
+                "help": "Number of updates steps to accumulate before performing a backward/update pass.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--gradient_accumulation_steps"
+                ],
+                "choices": [],
+                "default": 1,
+                "dest": "gradient_accumulation_steps"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--gradient_checkpointing",
+              "type": "CheckBox",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "gradient_checkpointing",
+                "help": "Whether or not to use gradient checkpointing to save memory at the expense of slower backward pass.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--gradient_checkpointing"
+                ],
+                "choices": [],
+                "default": true,
+                "dest": "gradient_checkpointing"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--use_8bit_adam",
+              "type": "CheckBox",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "use_8bit_adam",
+                "help": "Whether or not to use 8-bit Adam from bitsandbytes.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--use_8bit_adam"
+                ],
+                "choices": [],
+                "default": true,
+                "dest": "use_8bit_adam"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--mixed_precision",
+              "type": "Dropdown",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "mixed_precision",
+                "help": "Whether to use mixed precision. Choosebetween fp16 and bf16 (bfloat16). Bf16 requires PyTorch >= 1.10.and an Nvidia Ampere GPU.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--mixed_precision"
+                ],
+                "choices": [
+                  "no",
+                  "fp16",
+                  "bf16"
+                ],
+                "default": "no",
+                "dest": "mixed_precision"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--local_rank",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "local_rank",
+                "help": "For distributed training: local_rank",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--local_rank"
+                ],
+                "choices": [],
+                "default": -1,
+                "dest": "local_rank"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            }
+          ],
+          "groups": [],
+          "description": "Basic config for training",
+          "options": {
+            "label_color": "#000000",
+            "description_color": "#363636",
+            "legacy": {
+              "required_cols": 2,
+              "optional_cols": 2
+            },
+            "columns": 2,
+            "padding": 10,
+            "show_border": false
+          }
+        },
+        {
+          "name": "Learning rate config",
+          "items": [
+            {
+              "id": "--learning_rate",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "learning_rate",
+                "help": "Initial learning rate (after the potential warmup period) to use.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--learning_rate"
+                ],
+                "choices": [],
+                "default": 5e-06,
+                "dest": "learning_rate"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--scale_lr",
+              "type": "CheckBox",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "scale_lr",
+                "help": "Scale the learning rate by the number of GPUs, gradient accumulation steps, and batch size.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--scale_lr"
+                ],
+                "choices": [],
+                "default": false,
+                "dest": "scale_lr"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--lr_scheduler",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "lr_scheduler",
+                "help": "The scheduler type to use. Choose between [\"linear\", \"cosine\", \"cosine_with_restarts\", \"polynomial\", \"constant\", \"constant_with_warmup\"]",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--lr_scheduler"
+                ],
+                "choices": [],
+                "default": "constant",
+                "dest": "lr_scheduler"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--lr_warmup_steps",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "lr_warmup_steps",
+                "help": "Number of steps for the warmup in the lr scheduler.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--lr_warmup_steps"
+                ],
+                "choices": [],
+                "default": 500,
+                "dest": "lr_warmup_steps"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--tokenizer_name",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "tokenizer_name",
+                "help": "Pretrained tokenizer name or path if not the same as model_name",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--tokenizer_name"
+                ],
+                "choices": [],
+                "default": null,
+                "dest": "tokenizer_name"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--seed",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "seed",
+                "help": "A seed for reproducible training.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--seed"
+                ],
+                "choices": [],
+                "default": null,
+                "dest": "seed"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--center_crop",
+              "type": "CheckBox",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "center_crop",
+                "help": "Whether to center crop images before resizing to resolution",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--center_crop"
+                ],
+                "choices": [],
+                "default": false,
+                "dest": "center_crop"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--adam_beta1",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "adam_beta1",
+                "help": "The beta1 parameter for the Adam optimizer.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--adam_beta1"
+                ],
+                "choices": [],
+                "default": 0.9,
+                "dest": "adam_beta1"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--adam_beta2",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "adam_beta2",
+                "help": "The beta2 parameter for the Adam optimizer.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--adam_beta2"
+                ],
+                "choices": [],
+                "default": 0.999,
+                "dest": "adam_beta2"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--adam_weight_decay",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "adam_weight_decay",
+                "help": "Weight decay to use.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--adam_weight_decay"
+                ],
+                "choices": [],
+                "default": 0.01,
+                "dest": "adam_weight_decay"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--adam_epsilon",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "adam_epsilon",
+                "help": "Epsilon value for the Adam optimizer",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--adam_epsilon"
+                ],
+                "choices": [],
+                "default": 1e-08,
+                "dest": "adam_epsilon"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--max_grad_norm",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "max_grad_norm",
+                "help": "Max gradient norm.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--max_grad_norm"
+                ],
+                "choices": [],
+                "default": 1.0,
+                "dest": "max_grad_norm"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            }
+          ],
+          "groups": [],
+          "description": "Fine tune learning rate",
+          "options": {
+            "label_color": "#000000",
+            "description_color": "#363636",
+            "legacy": {
+              "required_cols": 2,
+              "optional_cols": 2
+            },
+            "columns": 2,
+            "padding": 10,
+            "show_border": false
+          }
+        },
+        {
+          "name": "Push to Huggingface Hub",
+          "items": [
+            {
+              "id": "--push_to_hub",
+              "type": "CheckBox",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "push_to_hub",
+                "help": "Whether or not to push the model to the Hub.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--push_to_hub"
+                ],
+                "choices": [],
+                "default": false,
+                "dest": "push_to_hub"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--hub_token",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "hub_token",
+                "help": "The token to use to push to the Model Hub.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--hub_token"
+                ],
+                "choices": [],
+                "default": null,
+                "dest": "hub_token"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            },
+            {
+              "id": "--hub_model_id",
+              "type": "TextField",
+              "cli_type": "optional",
+              "required": false,
+              "data": {
+                "display_name": "hub_model_id",
+                "help": "The name of the repository to keep in sync with the local `output_dir`.",
+                "required": false,
+                "nargs": "",
+                "commands": [
+                  "--hub_model_id"
+                ],
+                "choices": [],
+                "default": null,
+                "dest": "hub_model_id"
+              },
+              "options": {
+                "error_color": "#ea7878",
+                "label_color": "#000000",
+                "help_color": "#363636",
+                "full_width": false,
+                "validator": {
+                  "type": "ExpressionValidator",
+                  "test": "True",
+                  "message": ""
+                },
+                "external_validator": {
+                  "cmd": ""
+                }
+              }
+            }
+          ],
+          "groups": [],
+          "description": "Whether or not push model to huggingface hub",
+          "options": {
+            "label_color": "#000000",
+            "description_color": "#363636",
+            "legacy": {
+              "required_cols": 2,
+              "optional_cols": 2
+            },
+            "columns": 2,
+            "padding": 10,
+            "show_border": false
+          }
+        }
+      ]
+    }
+  }
+}
