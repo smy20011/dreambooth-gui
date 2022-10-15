@@ -1,8 +1,9 @@
 import { dialog, event, shell } from "@tauri-apps/api";
+import { message } from "@tauri-apps/api/dialog";
 import { appDir, join } from "@tauri-apps/api/path";
 import { appWindow } from "@tauri-apps/api/window";
 import { useEffect, useRef, useState } from "react";
-import { Button, Col, Form, Row, Tab, Tabs } from "react-bootstrap";
+import { Button, Col, Form, InputGroup, Row, Tab, Tabs } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { GetGpuInfo, GpuInfo } from "./Gpu";
 
@@ -130,7 +131,7 @@ function ConfigTrainer({ gpuInfo, setArgument }: ConfigTrainerProps) {
                 <Form.Text className="text-muted">
                     Add your custom arguments here.
                 </Form.Text>
-                <Form.Control as="textarea" rows={10} {...register("arguments")} />
+                <Form.Control as="textarea" rows={8} {...register("arguments")} />
             </Form.Group>
         </Form>
     );
@@ -141,7 +142,7 @@ interface TrainingArguments {
     instanceDir: string
 }
 
-async function GenTrainingCommandLine(args: TrainerArguments | null, token: string, instanceDir: string): Promise<string[]> {
+async function GenTrainingCommandLine(args: TrainerArguments | null, token: string, instanceDir: string, outputDir: string): Promise<string[]> {
     if (!args) {
         return [];
     }
@@ -164,7 +165,9 @@ ${args.arguments.join("\n")}
 `.replaceAll("\n", " ");
     let dockerCommand = [
         "run", "-t", "--gpus=all", `-v=${currentDir}:/train`,
-        `-v=${instanceDir}:/instance`, '-e', `HUGGING_FACE_HUB_TOKEN=${token}`
+        `-v=${instanceDir}:/instance`,
+        `-v=${outputDir}:/output`,
+        '-e', `HUGGING_FACE_HUB_TOKEN=${token}`
     ]
     if (classPromptDir) {
         dockerCommand.push(`-v='${classPromptDir}':/class`);
@@ -190,18 +193,18 @@ async function killDocker() {
 }
 
 function Training(props: TrainingArguments) {
-    const { register, watch, handleSubmit } = useForm();
+    const { register, watch, handleSubmit, setValue, formState: { errors } } = useForm();
     const [running, setRunning] = useState<boolean>(false);
     const [command, setCommand] = useState<string[]>([]);
     const [lines, setLines] = useState<string[]>([]);
     const outputRef = useRef<HTMLTextAreaElement>();
 
     watch(data => {
-        GenTrainingCommandLine(props.args, data.token, props.instanceDir).then(setCommand);
+        GenTrainingCommandLine(props.args, data.token, props.instanceDir, data.output_dir).then(setCommand);
     });
 
     useEffect(() => {
-        GenTrainingCommandLine(props.args, watch("token"), props.instanceDir).then(setCommand);
+        GenTrainingCommandLine(props.args, watch("token"), props.instanceDir, watch("output_dir")).then(setCommand);
     }, [props.args, props.instanceDir]);
 
     useEffect(() => {
@@ -216,6 +219,10 @@ function Training(props: TrainingArguments) {
     }, []);
 
     const onSubmit = async () => {
+        if (!props.instanceDir) {
+            await message("Please select instace dir in the pick image tab.", { title: 'Dreambooth', type: 'error' });
+            return;
+        }
         if (running) {
             killDocker();
             setRunning(false);
@@ -229,11 +236,31 @@ function Training(props: TrainingArguments) {
         }
     }
 
+    const selectOutputFolder = async () => {
+        const result = await dialog.open({
+            directory: true,
+        });
+        if (result != null && typeof result === 'string') {
+            setValue("output_dir", result);
+        }
+    };
+
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
             <Form.Group className="mb-3" controlId="token">
                 <Form.Label>Hugging Face Token</Form.Label>
-                <Form.Control type="text" {...register("token")} />
+                <Form.Control type="text" {...register("token", { required: true })} />
+                {errors?.token?.type == "required" && <Form.Text className="text-danger">Please set your hugging face token.</Form.Text>}
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="token">
+                <Form.Label>Output Dir</Form.Label>
+                <InputGroup>
+                    <Form.Control type="text" {...register("output_dir", { required: true })} />
+                    <Button variant="primary" onClick={selectOutputFolder}>
+                        Select
+                    </Button>
+                </InputGroup>
+                {errors?.output_dir?.type == "required" && <Form.Text className="text-danger">Please select a output dir</Form.Text>}
             </Form.Group>
             <Form.Group className="mb-3" controlId="args">
                 <div><Form.Label>Training Process</Form.Label></div>
