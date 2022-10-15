@@ -214,7 +214,10 @@ function Training(props: TrainingArguments) {
 
     useEffect(() => {
         const unlisten = appWindow.onCloseRequested(async () => {
-            await killDocker();
+            try {
+                await killDocker();
+            } catch {
+            }
         });
     }, []);
 
