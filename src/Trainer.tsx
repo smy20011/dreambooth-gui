@@ -2,7 +2,7 @@ import { dialog, event, shell } from "@tauri-apps/api";
 import { message } from "@tauri-apps/api/dialog";
 import { appDir, join } from "@tauri-apps/api/path";
 import { appWindow } from "@tauri-apps/api/window";
-import { useEffect, useRef, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import { Button, Col, Form, InputGroup, Row, Tab, Tabs } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { GetGpuInfo, GpuInfo } from "./Gpu";
@@ -197,7 +197,7 @@ function Training(props: TrainingArguments) {
     const [running, setRunning] = useState<boolean>(false);
     const [command, setCommand] = useState<string[]>([]);
     const [lines, setLines] = useState<string[]>([]);
-    const outputRef = useRef<HTMLTextAreaElement>();
+    const outputRef = useRef<any>();
 
     watch(data => {
         GenTrainingCommandLine(props.args, data.token, props.instanceDir, data.output_dir).then(setCommand);
