@@ -16,6 +16,17 @@
         "scope": [
           "$RESOURCE/*"
         ]
+      },
+      "shell": {
+        "all": true,
+        "execute": true,
+        "scope": [
+          {
+            "name": "docker",
+            "cmd": "docker",
+            "args": true
+          }
+        ]
       }
     },
     "bundle": {
@@ -33,7 +44,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "smy20011.dreambooth",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -62,7 +73,7 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 800,
         "resizable": true,
         "title": "dreambooth-gui",
         "width": 800
