@@ -232,6 +232,8 @@ function Training(props: TrainingArguments) {
         } else {
             const process = new shell.Command("docker", command);
             setLines([]);
+            process.on("close", () => setRunning(false));
+            process.on("error", () => setRunning(false));
             process.stdout.on("data", line => setLines(l => l.concat(line)));
             process.stderr.on("data", line => setLines(l => l.concat(line)));
             await process.spawn();
