@@ -1,9 +1,10 @@
-import { dialog, event, shell } from "@tauri-apps/api";
+import { dialog, shell } from "@tauri-apps/api";
 import { message } from "@tauri-apps/api/dialog";
+import { exists, createDir } from "@tauri-apps/api/fs";
 import { appDir, join } from "@tauri-apps/api/path";
 import { appWindow } from "@tauri-apps/api/window";
-import { createRef, useEffect, useRef, useState } from "react";
-import { Button, Col, Form, InputGroup, Row, Tab, Tabs } from "react-bootstrap";
+import { useEffect, useRef, useState } from "react";
+import { Button, Col, Form, InputGroup, Tab, Tabs } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { GetGpuInfo, GpuInfo } from "./Gpu";
 
@@ -153,7 +154,7 @@ python -u /train_dreambooth.py
 --pretrained_model_name_or_path='${args.model}'
 --instance_prompt='${args.instancePrompt}'
 --instance_data_dir=/instance
-${args.classPrompt ? "--instance_data_dir=/class --with_prior_preservation --prior_loss_weight=1.0" : ""}
+${args.classPrompt ? "--class_data_dir=/class --with_prior_preservation --prior_loss_weight=1.0" : ""}
 ${args.classPrompt ? "--class_prompt='" + args.classPrompt + "'" : ""}
 --output_dir=/output
 --resolution=512
@@ -170,7 +171,7 @@ ${args.arguments.join("\n")}
         '-e', `HUGGING_FACE_HUB_TOKEN=${token}`
     ]
     if (classPromptDir) {
-        dockerCommand.push(`-v='${classPromptDir}':/class`);
+        dockerCommand.push(`-v=${classPromptDir}:/class`);
     }
     dockerCommand = dockerCommand.concat([
         "smy20011/dreambooth:latest",
@@ -190,6 +191,13 @@ async function killDocker() {
         console.log(`Killed docker image ${id}, retcode=${ret.code}`);
     });
     await Promise.all(futures);
+}
+
+async function getClassDir(prompt: string | undefined) {
+    if (!prompt) {
+        return "";
+    }
+    return await join(await appDir(), prompt);
 }
 
 function Training(props: TrainingArguments) {
@@ -230,6 +238,10 @@ function Training(props: TrainingArguments) {
             killDocker();
             setRunning(false);
         } else {
+            const classDir = await getClassDir(props.args?.classPrompt);
+            if (classDir && !(await exists(classDir) as unknown as boolean)) {
+                await createDir(classDir);
+            }
             const process = new shell.Command("docker", command);
             setLines([]);
             process.on("close", () => setRunning(false));
