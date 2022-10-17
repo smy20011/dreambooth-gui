@@ -15,13 +15,13 @@ Gui supports any NVIDIA card with >10GB vram.
 1. Download and install docker from https://www.docker.com/
 2. Setup WSL2 for windows. https://learn.microsoft.com/en-us/windows/wsl/install
 3. If you find 'WSL 2 installation is incomplete' when starting docker, you can follow this video to fix it. https://www.youtube.com/watch?v=Ffzud5xLH4c
-4. [Download](https://github.com/smy20011/dreambooth-gui/releases/download/v0.1.1/dreambooth-gui_0.1.1_x64_en-US.msi) and install dreambooth-gui_*_x64_en-US.msi
- from [release page](https://github.com/smy20011/dreambooth-gui/releases/).
+4. [Download](https://github.com/smy20011/dreambooth-gui/releases/latest) and install dreambooth-gui_*_x64_en-US.msi
+ from [release page](https://github.com/smy20011/dreambooth-gui/releases/latest).
 5. Run the dreambooth-gui as administrator.
 
 ## Install (Linux)
 
 1. Download and install docker from https://www.docker.com/
-2. Download AppImage from [release page](https://github.com/smy20011/dreambooth-gui/releases/).
+2. Download AppImage from [release page](https://github.com/smy20011/dreambooth-gui/releases/latest).
 3. Run `chmod +x dreambooth-gui_*amd64.AppImage`
 4. Run `sudo dreambooth-gui_*amd64.AppImage`
