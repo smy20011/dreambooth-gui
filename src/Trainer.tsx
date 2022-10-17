@@ -201,7 +201,7 @@ async function getClassDir(prompt: string | undefined) {
 }
 
 function Training(props: TrainingArguments) {
-    const { register, watch, handleSubmit, setValue, formState: { errors } } = useForm();
+    const { register, watch, handleSubmit, setValue, formState: { errors, isValid } } = useForm();
     const [running, setRunning] = useState<boolean>(false);
     const [command, setCommand] = useState<string[]>([]);
     const [lines, setLines] = useState<string[]>([]);
@@ -239,16 +239,26 @@ function Training(props: TrainingArguments) {
             setRunning(false);
         } else {
             const classDir = await getClassDir(props.args?.classPrompt);
-            if (classDir && !(await exists(classDir) as unknown as boolean)) {
-                await createDir(classDir);
+            try {
+                if (classDir && !(await exists(classDir) as unknown as boolean)) {
+                    await createDir(classDir);
+                }
+            } catch (e) {
+                await message(`Failed to create dir ${classDir}, ${e}`);
+                return;
             }
-            const process = new shell.Command("docker", command);
-            setLines([]);
-            process.on("close", () => setRunning(false));
-            process.on("error", () => setRunning(false));
-            process.stdout.on("data", line => setLines(l => l.concat(line)));
-            process.stderr.on("data", line => setLines(l => l.concat(line)));
-            await process.spawn();
+            try {
+                const process = new shell.Command("docker", command);
+                setLines([]);
+                process.on("close", () => setRunning(false));
+                process.on("error", () => setRunning(false));
+                process.stdout.on("data", line => setLines(l => l.concat(line)));
+                process.stderr.on("data", line => setLines(l => l.concat(line)));
+                await process.spawn();
+            } catch (e) {
+                await message(`Failed to run docker, ${e}`);
+                return;
+            }
             setRunning(true);
         }
     }
