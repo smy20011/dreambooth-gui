@@ -25,3 +25,26 @@ Gui supports any NVIDIA card with >10GB vram.
 2. Download AppImage from [release page](https://github.com/smy20011/dreambooth-gui/releases/latest).
 3. Run `chmod +x dreambooth-gui_*amd64.AppImage`
 4. Run `sudo dreambooth-gui_*amd64.AppImage`
+
+## FAQs
+
+1. Failed to create directory
+
+    Please make sure you have the latest verion of GUI. This is a old bug that fixed in v0.1.3
+
+2. PIL.UnidentifiedImageEnnon: cannot identify image file
+
+    Make sure the instance image folder only have image.
+
+
+## Roadmap
+
+- [ ] Refactor the state management.
+- [ ] Better error handling to cover FAQs.
+- [ ] Allow advanced customization
+    - [ ] Load local model.
+    - [ ] Save/Load config for users.
+    - [ ] Save model / pics in places other than $APP_DIR
+- [ ] Better training progress report.
+    - [ ] Create a dialog when training finished.
+- [ ] Support model converstion.
