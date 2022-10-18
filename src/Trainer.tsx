@@ -200,6 +200,12 @@ async function getClassDir(prompt: string | undefined) {
     return await join(await appDir(), prompt);
 }
 
+async function ensureDir(dir: string) {
+    if (dir && !(await exists(dir) as unknown as boolean)) {
+        await createDir(dir, { recursive: true });
+    }
+}
+
 function Training(props: TrainingArguments) {
     const { register, watch, handleSubmit, setValue, formState: { errors, isValid } } = useForm();
     const [running, setRunning] = useState<boolean>(false);
@@ -240,13 +246,22 @@ function Training(props: TrainingArguments) {
         } else {
             const classDir = await getClassDir(props.args?.classPrompt);
             try {
-                if (classDir && !(await exists(classDir) as unknown as boolean)) {
-                    await createDir(classDir);
+                if (classDir) {
+                    ensureDir(classDir);
                 }
             } catch (e) {
                 await message(`Failed to create dir ${classDir}, ${e}`);
                 return;
             }
+
+            const appPath = await appDir();
+            try {
+                ensureDir(appPath);
+            } catch (e) {
+                await message(`Failed to create dir ${appPath}, ${e}`);
+                return;
+            }
+
             try {
                 const process = new shell.Command("docker", command);
                 setLines([]);
