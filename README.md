@@ -39,7 +39,7 @@ Gui supports any NVIDIA card with >10GB vram.
 
 ## Roadmap
 
-- [ ] Refactor the state management.
+- [X] Refactor the state management.
 - [ ] Better error handling to cover FAQs.
 - [ ] Allow advanced customization
     - [ ] Load local model.
