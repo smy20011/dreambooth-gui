@@ -9,23 +9,30 @@ export async function genTrainingCommandLine(state: State, trainingArgs: string[
     }
     const currentDir = await appDir();
     const classPromptDir = state.classPrompt ? await join(currentDir, state.classPrompt) : "";
-    const accelerateCommand = `
-python -u /train_dreambooth.py
---pretrained_model_name_or_path='${state.model}'
---instance_prompt='${state.instancePrompt}'
---instance_data_dir=/instance
-${state.classPrompt ? "--class_data_dir=/class --with_prior_preservation --prior_loss_weight=1.0" : ""}
-${state.classPrompt ? "--class_prompt='" + state.classPrompt + "'" : ""}
---output_dir=/output
---resolution=512
---max_train_steps=${state.steps}
---learning_rate=5e-6
---lr_scheduler='constant'
---lr_warmup_steps=0
-${trainingArgs.join("\n")}
-`.replaceAll("\n", " ");
+    let args = [
+        `--pretrained_model_name_or_path=${state.model}`,
+        `--instance_prompt=${state.instancePrompt}`,
+        `--instance_data_dir=/instance`
+    ];
+    if (state.classPrompt) {
+        args.push(
+            "--class_data_dir=/class",
+            "--with_prior_preservation",
+            "--prior_loss_weight=1.0",
+            `--class_prompt=${state.classPrompt}`
+        );
+    }
+    args.push(
+        "--output_dir=/output",
+        "--resolution=512",
+        `--max_train_steps=${state.steps}`,
+        "--learning_rate=5e-6",
+        "--lr_scheduler=constant",
+        "--lr_warmup_steps=0",
+        ...trainingArgs
+    )
     let dockerCommand = [
-        "run", "-t", "--gpus=all", `-v=${currentDir}:/train`,
+        "run", "--pull=always", "-t", "--gpus=all", `-v=${currentDir}:/train`,
         `-v=${state.instanceDir}:/instance`,
         `-v=${state.outputDir}:/output`,
         '-e', `HUGGING_FACE_HUB_TOKEN=${state.token}`
@@ -33,12 +40,12 @@ ${trainingArgs.join("\n")}
     if (classPromptDir) {
         dockerCommand.push(`-v=${classPromptDir}:/class`);
     }
-    dockerCommand = dockerCommand.concat([
+    dockerCommand.push(
         "smy20011/dreambooth:latest",
-        "bash",
-        "-c",
-        `${accelerateCommand} 2>&1 | tr '\\\\r' '\\\\n'`
-    ]);
+        "/start_training",
+        "/train_dreambooth.py",
+        ...args
+    );
     return dockerCommand;
 }
 

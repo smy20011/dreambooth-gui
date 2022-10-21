@@ -166,7 +166,8 @@ function Training() {
             try {
                 setRunning(true);
                 setLines([]);
-                runDocker(trainingDockerCommand.data, line => setLines(list => list.concat(line)));
+                await runDocker(trainingDockerCommand.data, line => setLines(list => list.concat(line)));
+                setRunning(false);
             } catch (e) {
                 await message(`Failed to start docker ${e}`);
             }
@@ -202,13 +203,13 @@ function Training() {
                 <Form.Control as="textarea" rows={1}
                     value={
                         trainingDockerCommand.state === "hasData" && trainingDockerCommand.data.length > 0 ?
-                            `docker ${trainingDockerCommand.data.slice(0, -1).join(" ")} "${trainingDockerCommand.data.at(-1)}"` :
+                            `docker ${trainingDockerCommand.data.join(" ")}` :
                             ""
                     } disabled />
             </Form.Group>
             <Form.Group className="mb-3" controlId="args">
                 <div><Form.Label>Training Output</Form.Label></div>
-                <Form.Control as="textarea" rows={10} value={lines.slice(-10).join("\n")} ref={outputRef} disabled />
+                <Form.Control as="textarea" rows={10} value={lines.join("\n")} ref={outputRef} disabled />
             </Form.Group>
             {!running ?
                 <Button variant="primary" type="submit">
