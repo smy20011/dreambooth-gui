@@ -232,10 +232,10 @@ function Trainer() {
         }, 1000);
         const command = new shell.Command("docker", "version");
         command.execute()
-            .catch(err => setError("Failed to execute docker command, make sure docker is install in your system."))
+            .catch(err => setError("Failed to execute docker command, make sure docker is installed in your system.\n\nOpen the docker GUI and make sure it's running."))
             .then(res => {
                 if (res && res.code != 0) {
-                    setError(`Docker command returns error, make sure you run this program as admin/root user. \n\n'docker version' output: ${res.stderr}`);
+                    setError(`Docker command returns error, make sure you run this program as admin/root user. \n\n'docker version' output: ${res.stderr}\n\nOpen the docker GUI and make sure it's running.`);
                 }
             });
         return () => {
