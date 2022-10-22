@@ -46,5 +46,6 @@ Gui supports any NVIDIA card with >10GB vram.
     - [ ] Save/Load config for users.
     - [ ] Save model / pics in places other than $APP_DIR
 - [ ] Better training progress report.
-    - [ ] Create a dialog when training finished.
+    - [X] Create a dialog when training finished.
+    - [ ] Progress bar.
 - [X] Support model converstion.

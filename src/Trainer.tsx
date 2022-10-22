@@ -190,6 +190,7 @@ function Training() {
             } catch (e) {
                 await message(`Failed to start docker ${e}`);
             }
+            await message(`Training finished, check ${state.outputDir} for model output.`);
         }
     }
 
