@@ -19,7 +19,7 @@ function ImagePicker() {
             directory: true,
         });
         if (result != null && typeof result === 'string') {
-            setState({ ...state, instanceDir: result })
+            setState({ ...state, instanceDir: result, tab: "trainer_config" })
         }
     }
     return (
@@ -190,7 +190,7 @@ function Training() {
             } catch (e) {
                 await message(`Failed to start docker ${e}`);
             }
-            await message(`Training finished, check ${state.outputDir} for model output.`);
+            await message(`Training finished, check ${state.outputDir} for model output.`, 'Finished!');
         }
     }
 
@@ -219,7 +219,7 @@ function Training() {
                 </InputGroup>
             </Form.Group>
             <Form.Group className="mb-3" controlId="genCkpt">
-                <Form.Check label="Generate model checkpoint in output directory" checked={state.genCkpt} onChange={(t) => updateStateField(setState, "genCkpt", t.target.checked)} />
+                <Form.Check label="Generate model checkpoint (.ckpt file) in the output directory" checked={state.genCkpt} onChange={(t) => updateStateField(setState, "genCkpt", t.target.checked)} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="args">
                 <div><Form.Label>Training Process</Form.Label></div>
