@@ -166,7 +166,26 @@ function Training() {
             try {
                 setRunning(true);
                 setLines([]);
-                await runDocker(trainingDockerCommand.data, line => setLines(list => list.concat(line)));
+                const ret = await runDocker(trainingDockerCommand.data, line => setLines(list => list.concat(line)));
+                if (ret != 0) {
+                    await message(`Failed to train model, see output for detailed error.`);
+                    setRunning(false);
+                    return;
+                }
+                if (state.genCkpt) {
+                    let genCkptOuput: string[] = [];
+                    const ret = await runDocker([
+                        "run", "-t", `-v=${state.outputDir}:/model`,
+                        "smy20011/dreambooth:latest",
+                        "python",
+                        "/diffusers/scripts/convert_diffusers_to_original_stable_diffusion.py",
+                        "--model_path=/model",
+                        "--checkpoint_path=/model/model.ckpt"
+                    ], l => genCkptOuput.push(l));
+                    if (ret != 0) {
+                        await message(`Failed to convert model, output: ${genCkptOuput.join("\n")}`);
+                    }
+                }
                 setRunning(false);
             } catch (e) {
                 await message(`Failed to start docker ${e}`);
@@ -197,6 +216,9 @@ function Training() {
                         Select
                     </Button>
                 </InputGroup>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="genCkpt">
+                <Form.Check label="Generate model checkpoint in output directory" checked={state.genCkpt} onChange={(t) => updateStateField(setState, "genCkpt", t.target.checked)} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="args">
                 <div><Form.Label>Training Process</Form.Label></div>

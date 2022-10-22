@@ -40,11 +40,11 @@ Gui supports any NVIDIA card with >10GB vram.
 ## Roadmap
 
 - [X] Refactor the state management.
-- [ ] Better error handling to cover FAQs.
+- [X] Better error handling to cover FAQs.
 - [ ] Allow advanced customization
     - [ ] Load local model.
     - [ ] Save/Load config for users.
     - [ ] Save model / pics in places other than $APP_DIR
 - [ ] Better training progress report.
     - [ ] Create a dialog when training finished.
-- [ ] Support model converstion.
+- [X] Support model converstion.

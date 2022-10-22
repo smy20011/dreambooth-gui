@@ -24,6 +24,8 @@ export interface State {
     outputDir: string
     // Tab index
     tab: string
+    // Should generate ckpt file in the end
+    genCkpt: boolean;
 }
 
 // Global state for the application.
@@ -44,6 +46,7 @@ export let stateAtom = atom<State>({
     steps: 600,
     outputDir: "",
     tab: "pick_image",
+    genCkpt: true
 });
 
 function recordToArgs(obj: Record<string, any>): string[] {
