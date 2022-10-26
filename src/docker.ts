@@ -1,5 +1,6 @@
 
 import { shell } from "@tauri-apps/api";
+import { exists } from "@tauri-apps/api/fs";
 import { appDir, join } from "@tauri-apps/api/path";
 import { State } from "./state";
 
@@ -10,7 +11,6 @@ export async function genTrainingCommandLine(state: State, trainingArgs: string[
     const currentDir = await appDir();
     const classPromptDir = state.classPrompt ? await join(currentDir, state.classPrompt) : "";
     let args = [
-        `--pretrained_model_name_or_path=${state.model}`,
         `--instance_prompt=${state.instancePrompt}`,
         `--instance_data_dir=/instance`
     ];
@@ -26,7 +26,7 @@ export async function genTrainingCommandLine(state: State, trainingArgs: string[
         "--output_dir=/output",
         "--resolution=512",
         `--max_train_steps=${state.steps}`,
-        "--learning_rate=5e-6",
+        `--learning_rate=${state.learningRate}`,
         "--lr_scheduler=constant",
         "--lr_warmup_steps=0",
         ...trainingArgs
@@ -39,6 +39,12 @@ export async function genTrainingCommandLine(state: State, trainingArgs: string[
     ]
     if (classPromptDir) {
         dockerCommand.push(`-v=${classPromptDir}:/class`);
+    }
+    if ((await exists(state.model)) as unknown as boolean) {
+        args.push('--pretrained_model_name_or_path=/pretrained');
+        dockerCommand.push(`-v=${state.model}:/pretrained`)
+    } else {
+        args.push(`--pretrained_model_name_or_path=${state.model}`);
     }
     dockerCommand.push(
         "smy20011/dreambooth:latest",

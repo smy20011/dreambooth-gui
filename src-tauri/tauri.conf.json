@@ -15,8 +15,7 @@
       "fs": {
         "all": true,
         "scope": [
-          "$RESOURCE/*",
-          "$APP/*"
+          "*"
         ]
       },
       "shell": {

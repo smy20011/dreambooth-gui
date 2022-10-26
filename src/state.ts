@@ -12,14 +12,16 @@ export interface State {
     classPrompt: string;
     // User defined additional arguments to train the model.
     additionalArguments?: string[];
-    // Model name.
+    // Model name or local model path.
     model: string;
     // Huggingface Token
     token: string;
     // GPU State
-    gpuInfo: GpuInfo
+    gpuInfo: GpuInfo;
     // Max training steps
-    steps: number
+    steps: number;
+    // Learning rate.
+    learningRate: string;
     // Model output dir
     outputDir: string
     // Tab index
@@ -44,6 +46,7 @@ export let stateAtom = atom<State>({
         }
     },
     steps: 600,
+    learningRate: "1e-5",
     outputDir: "",
     tab: "pick_image",
     genCkpt: true

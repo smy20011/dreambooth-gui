@@ -1,12 +1,12 @@
 import { dialog, shell } from "@tauri-apps/api";
 import { message } from "@tauri-apps/api/dialog";
-import { exists, createDir } from "@tauri-apps/api/fs";
+import { exists, createDir, writeTextFile } from "@tauri-apps/api/fs";
 import { appDir, join } from "@tauri-apps/api/path";
 import { appWindow } from "@tauri-apps/api/window";
-import { useAtom } from "jotai";
+import { writeFile } from "fs";
+import { useAtom, useAtomValue } from "jotai";
 import { FormEvent, SetStateAction, Suspense, useEffect, useRef, useState } from "react";
 import { Button, Col, Form, InputGroup, Tab, Tabs } from "react-bootstrap";
-import { useForm } from "react-hook-form";
 import { killDocker, runDocker } from "./docker";
 import { GetGpuInfo, GpuInfo } from "./Gpu";
 import { State, stateAtom, trainingArgsAtom, trainingDockerCommandAtom, verificationMessageAtom } from "./state";
@@ -50,13 +50,26 @@ function ConfigTrainer() {
     if (!state.gpuInfo) {
         return <div>Cannot find your GPU infomation.</div>
     }
+    const selectModelFolder = async () => {
+        const result = await dialog.open({
+            directory: true,
+        });
+        if (result != null && typeof result === 'string') {
+            setState({ ...state, model: result });
+        }
+    };
 
     return (
         <Form>
             <p>Run dreambooth on {state.gpuInfo!.name}, {(state.gpuInfo!.meminfo.free / GIB).toFixed(2)}gb free</p>
             <Form.Group className="mb-3" controlId="model">
-                <Form.Label>Model name</Form.Label>
-                <Form.Control type="text" {...bind(state, setState, "model")} />
+                <Form.Label>Model</Form.Label>
+                <InputGroup>
+                    <Form.Control type="text" {...bind(state, setState, "model")} />
+                    <Button variant="primary" onClick={selectModelFolder}>
+                        Choose Local Model
+                    </Button>
+                </InputGroup>
                 <Form.Text className="text-muted">
                     Name of the base model, (eg, CompVis/stable-diffusion-v1-4)
                 </Form.Text>
@@ -78,6 +91,10 @@ function ConfigTrainer() {
             <Form.Group className="mb-3" controlId="class">
                 <Form.Label>Training Steps</Form.Label>
                 <Form.Control type="number" {...bind(state, setState, "steps")} />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="class">
+                <Form.Label>Training Steps</Form.Label>
+                <Form.Control type="text" {...bind(state, setState, "learningRate")} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="args">
                 <div><Form.Label>Training arguments</Form.Label></div>
@@ -116,6 +133,7 @@ function Training() {
     const [verificationMessage] = useAtom(verificationMessageAtom);
     const [state, setState] = useAtom(stateAtom);
     const [trainingDockerCommand] = useAtom(trainingDockerCommandAtom);
+    const trainingArgs = useAtomValue(trainingArgsAtom);
 
     const outputRef = useRef<any>();
 
@@ -149,7 +167,8 @@ function Training() {
             }
             const dirs = [
                 await getClassDir(state.classPrompt),
-                await appDir()
+                await appDir(),
+                state.outputDir,
             ];
 
             for (const dir of dirs) {
@@ -172,6 +191,12 @@ function Training() {
                     setRunning(false);
                     return;
                 }
+                await writeTextFile(await join(state.outputDir, "trainer_config"), JSON.stringify({
+                    instancePrompt: state.instancePrompt,
+                    classPrompt: state.classPrompt,
+                    trainingArguments: trainingArgs,
+                    genCkpt: state.genCkpt,
+                }));
                 if (state.genCkpt) {
                     let genCkptOuput: string[] = [];
                     const ret = await runDocker([
@@ -251,9 +276,7 @@ function Trainer() {
     const [state, setState] = useAtom(stateAtom);
 
     useEffect(() => {
-        const timerId = setTimeout(() => {
-            GetGpuInfo().then(info => updateStateField(setState, "gpuInfo", info)).catch(err => setError(`Failed to fetch GPU info ${error}`));
-        }, 1000);
+        GetGpuInfo().then(info => updateStateField(setState, "gpuInfo", info)).catch(err => setError(`Failed to fetch GPU info ${error}`));
         const command = new shell.Command("docker", "version");
         command.execute()
             .catch(err => setError("Failed to execute docker command, make sure docker is installed in your system.\n\nOpen the docker GUI and make sure it's running."))
@@ -262,9 +285,6 @@ function Trainer() {
                     setError(`Docker command returns error, make sure you run this program as admin/root user. \n\n'docker version' output: ${res.stderr}\n\nOpen the docker GUI and make sure it's running.`);
                 }
             });
-        return () => {
-            clearTimeout(timerId);
-        };
     }, []);
 
     return (
