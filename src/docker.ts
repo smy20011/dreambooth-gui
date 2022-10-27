@@ -47,7 +47,7 @@ export async function genTrainingCommandLine(state: State, trainingArgs: string[
         args.push(`--pretrained_model_name_or_path=${state.model}`);
     }
     dockerCommand.push(
-        "smy20011/dreambooth:latest",
+        "smy20011/dreambooth:gpu_debug",
         "/start_training",
         "/train_dreambooth.py",
         ...args

@@ -201,7 +201,7 @@ function Training() {
                     let genCkptOuput: string[] = [];
                     const ret = await runDocker([
                         "run", "-t", `-v=${state.outputDir}:/model`,
-                        "smy20011/dreambooth:gpu_debug",
+                        "smy20011/dreambooth:latest",
                         "python",
                         "/diffusers/scripts/convert_diffusers_to_original_stable_diffusion.py",
                         "--model_path=/model",
