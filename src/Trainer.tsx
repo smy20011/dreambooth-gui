@@ -201,7 +201,7 @@ function Training() {
                     let genCkptOuput: string[] = [];
                     const ret = await runDocker([
                         "run", "-t", `-v=${state.outputDir}:/model`,
-                        "smy20011/dreambooth:latest",
+                        "smy20011/dreambooth:gpu_debug",
                         "python",
                         "/diffusers/scripts/convert_diffusers_to_original_stable_diffusion.py",
                         "--model_path=/model",
@@ -247,7 +247,7 @@ function Training() {
                 <Form.Check label="Generate model checkpoint (.ckpt file) in the output directory" checked={state.genCkpt} onChange={(t) => updateStateField(setState, "genCkpt", t.target.checked)} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="args">
-                <div><Form.Label>Training Process</Form.Label></div>
+                <div><Form.Label>Training Command</Form.Label></div>
                 <Form.Control as="textarea" rows={1}
                     value={
                         trainingDockerCommand.state === "hasData" && trainingDockerCommand.data.length > 0 ?
