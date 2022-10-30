@@ -1,11 +1,11 @@
 # Dreambooth Gui
 
 Provides a easy-to-use gui for users to train Dreambooth with custom images. This
-Gui supports any NVIDIA card with >10GB vram.
+Gui supports any NVIDIA card with >10GB VRAM.
 
 ## Highlights
 
-1. Automatically decide training params that fit your available varm.
+1. Automatically decide training params that fit your available VRAM.
 2. Easy to use Gui for you to select images.
 3. Support prior preservation training with class images.
 4. Automatically cache models.
