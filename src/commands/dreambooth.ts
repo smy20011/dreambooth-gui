@@ -57,11 +57,11 @@ export default class Dreambooth {
         // Model dir or name.
         public model: string = "CompVis/stable-diffusion-v1-4",
         // Model output dir
-        public outputDir = "/output",
+        public outputDir = "",
         // Class image directory.
-        public classDir = "/class",
+        public classDir = "",
         // Dir of images.
-        public instanceDir = "/instance",
+        public instanceDir = "",
         // Script location
         public scriptLocation: string = "/train_dreambooth.py",
         // Additional training arguments
@@ -109,7 +109,8 @@ export default class Dreambooth {
                 ...this.getInstantArguments(),
                 ...this.getClassArguments(),
                 ...this.getTrainingArguments(),
-                ...this.getOutputArguments()
+                ...this.getOutputArguments(),
+                ...this.additionalArguments
             ],
             environment: {
                 "HUGGING_FACE_HUB_TOKEN": this.token,

@@ -1,9 +1,16 @@
-import { expect, test, describe } from 'vitest'
+import { expect, test, describe, beforeEach } from 'vitest'
 import Dreambooth from './dreambooth';
 describe('Dreambooth Test', () => {
-    test('Instance prompt only training', () => {
-        let dreambooth = new Dreambooth("sks", "");
+    let dreambooth: Dreambooth;
+    beforeEach(() => {
+        dreambooth = new Dreambooth("sks");
+        dreambooth.instanceDir = "/instance";
+        dreambooth.classDir = "/class";
+        dreambooth.outputDir = "/output"
         dreambooth.token = "abc";
+    });
+
+    test('Instance prompt only training', () => {
         const command = dreambooth.getTrainingCommand();
         expect(command.arguments).toEqual([
             "python",
@@ -24,8 +31,7 @@ describe('Dreambooth Test', () => {
         })
     });
     test('Class training', () => {
-        let dreambooth = new Dreambooth("sks", "class");
-        dreambooth.token = "abc";
+        dreambooth.classPrompt = "class"
         const command = dreambooth.getTrainingCommand();
         expect(command.arguments).toEqual([
             "python",

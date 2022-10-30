@@ -5,7 +5,7 @@ import { PrimitiveAtom, SetAtom } from "jotai/core/atom";
 import _ from "lodash";
 
 export function updateStateField<T>(setState: (update: SetStateAction<T>) => void, name: keyof T, value: any) {
-    setState(s => _.assign(s, { [name]: value }));
+    setState(s => _.assign(_.clone(s), { [name]: value }));
 }
 
 export function bind<T>(state: T, setState: (update: SetStateAction<T>) => void, name: keyof T) {

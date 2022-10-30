@@ -3,7 +3,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { GetGpuInfo } from "../Gpu";
-import { gpuAtom } from "../state";
+import { updateGpuAtom } from "../state";
 import ConfigTrainer from "./ConfigTrainer";
 import ImagePicker from "./ImagePicker";
 import { Training } from "./Training";
@@ -13,10 +13,10 @@ import { Training } from "./Training";
 
 function Trainer() {
     const [error, setError] = useState<string>("");
-    const setGpuInfo = useSetAtom(gpuAtom);
+    const updateGpu = useSetAtom(updateGpuAtom);
 
     useEffect(() => {
-        GetGpuInfo().then(setGpuInfo).catch(err => setError(`Failed to fetch GPU info ${error}`));
+        GetGpuInfo().then(updateGpu).catch(err => setError(`Failed to fetch GPU info ${error}`));
         const command = new shell.Command("docker", "version");
         command.execute()
             .catch(err => setError("Failed to execute docker command, make sure docker is installed in your system.\n\nOpen the docker GUI and make sure it's running."))
