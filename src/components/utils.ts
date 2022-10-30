@@ -1,19 +1,25 @@
 import { exists, createDir } from "@tauri-apps/api/fs";
 import { join, appDir } from "@tauri-apps/api/path";
-import { SetStateAction } from "react";
-import { State } from "../state";
+import { Atom, SetStateAction, useAtom } from "jotai";
+import { PrimitiveAtom, SetAtom } from "jotai/core/atom";
+import _ from "lodash";
 
-export type StateKey = keyof State;
-
-export function updateStateField(setState: (update: SetStateAction<State>) => void, name: StateKey, value: any) {
-    setState(s => ({ ...s, [name]: value }));
+export function updateStateField<T>(setState: (update: SetStateAction<T>) => void, name: keyof T, value: any) {
+    setState(s => _.assign(s, { [name]: value }));
 }
 
-export function bind(state: State, setState: (update: SetStateAction<State>) => void, name: StateKey) {
+export function bind<T>(state: T, setState: (update: SetStateAction<T>) => void, name: keyof T) {
     return {
         value: state[name] as any,
         onChange: (t: any) => updateStateField(setState, name, t.target.value)
     }
+}
+
+export function useAtomForm<Value>(atom: PrimitiveAtom<Value>): [Value, SetAtom<SetStateAction<Value>, void>, (name: keyof Value) => any] {
+    const [state, setState] = useAtom<Value>(atom);
+    return [
+        state, setState, (name: keyof Value) => bind(state, setState, name)
+    ]
 }
 
 export async function getClassDir(prompt: string | undefined) {

@@ -1,16 +1,17 @@
 import { dialog } from "@tauri-apps/api";
 import { useAtom } from "jotai";
 import { Col, Button } from "react-bootstrap";
-import { stateAtom } from "../state";
+import { dreamboothAtom } from "../state";
+import { useAtomForm } from "./utils";
 
 export default function ImagePicker() {
-    const [state, setState] = useAtom(stateAtom);
+    const [state, setState, bind] = useAtomForm(dreamboothAtom);
     const showDialog = async () => {
         const result = await dialog.open({
             directory: true,
         });
         if (result != null && typeof result === 'string') {
-            setState({ ...state, instanceDir: result, tab: "trainer_config" })
+            bind("instanceDir").onChange(result);
         }
     }
     return (

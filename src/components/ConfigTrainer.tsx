@@ -1,15 +1,16 @@
 import { dialog } from "@tauri-apps/api";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
+import _ from "lodash";
 import { Form, InputGroup, Button } from "react-bootstrap";
-import { stateAtom, trainingArgsAtom } from "../state";
-import { bind, updateStateField } from "./utils";
+import { dreamboothAtom, gpuAtom } from "../state";
+import { bind, updateStateField, useAtomForm } from "./utils";
 
 export default function ConfigTrainer() {
     const GIB = 1024 * 1024 * 1024;
-    const [state, setState] = useAtom(stateAtom);
-    const [trainingArgs] = useAtom(trainingArgsAtom);
+    const [state, setState, bind] = useAtomForm(dreamboothAtom);
+    const gpuInfo = useAtomValue(gpuAtom);
 
-    if (!state.gpuInfo) {
+    if (!gpuInfo) {
         return <div>Cannot find your GPU infomation.</div>
     }
     const selectModelFolder = async () => {
@@ -17,17 +18,17 @@ export default function ConfigTrainer() {
             directory: true,
         });
         if (result != null && typeof result === 'string') {
-            setState({ ...state, model: result });
+            setState(s => _.assign(s, { model: result }));
         }
     };
 
     return (
         <Form>
-            <p>Run dreambooth on {state.gpuInfo!.name}, {(state.gpuInfo!.meminfo.free / GIB).toFixed(2)}gb free</p>
+            <p>Run dreambooth on {gpuInfo.name}, {(gpuInfo.meminfo.free / GIB).toFixed(2)}gb free</p>
             <Form.Group className="mb-3" controlId="model">
                 <Form.Label>Model</Form.Label>
                 <InputGroup>
-                    <Form.Control type="text" {...bind(state, setState, "model")} />
+                    <Form.Control type="text" {...bind("model")} />
                     <Button variant="primary" onClick={selectModelFolder}>
                         Choose Local Model
                     </Button>
@@ -38,25 +39,25 @@ export default function ConfigTrainer() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="instance">
                 <Form.Label>Instance prompt</Form.Label>
-                <Form.Control type="text" {...bind(state, setState, "instancePrompt")} />
+                <Form.Control type="text" {...bind("instancePrompt")} />
                 <Form.Text className="text-muted">
                     Name of the instance, use a rare word if possible. (Eg, sks)
                 </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="class">
                 <Form.Label>Class prompt</Form.Label>
-                <Form.Control type="text" {...bind(state, setState, "classPrompt")} />
+                <Form.Control type="text" {...bind("classPrompt")} />
                 <Form.Text className="text-muted">
                     If you want training with prior-preservation loss, set the class prompt. (Eg, a person)
                 </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="class">
                 <Form.Label>Training Steps</Form.Label>
-                <Form.Control type="number" {...bind(state, setState, "steps")} />
+                <Form.Control type="number" {...bind("steps")} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="class">
                 <Form.Label>Training Steps</Form.Label>
-                <Form.Control type="text" {...bind(state, setState, "learningRate")} />
+                <Form.Control type="text" {...bind("learningRate")} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="args">
                 <div><Form.Label>Training arguments</Form.Label></div>
@@ -66,9 +67,9 @@ export default function ConfigTrainer() {
                 <Form.Control
                     as="textarea"
                     rows={8}
-                    value={(state.additionalArguments || trainingArgs).join("\n")}
+                    value={state.additionalArguments.join("\n")}
                     onChange={t => {
-                        updateStateField(setState, "additionalArguments", t.target.value.split("\n"));
+                        bind("additionalArguments").onChange(t.target.value.split("\n"));
                     }}
                 />
             </Form.Group>

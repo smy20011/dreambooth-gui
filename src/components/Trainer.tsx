@@ -1,23 +1,22 @@
 import { shell } from "@tauri-apps/api";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { GetGpuInfo } from "../Gpu";
-import { stateAtom } from "../state";
+import { gpuAtom } from "../state";
 import ConfigTrainer from "./ConfigTrainer";
 import ImagePicker from "./ImagePicker";
 import { Training } from "./Training";
-import { updateStateField } from "./utils";
 
 
 
 
 function Trainer() {
     const [error, setError] = useState<string>("");
-    const [state, setState] = useAtom(stateAtom);
+    const setGpuInfo = useSetAtom(gpuAtom);
 
     useEffect(() => {
-        GetGpuInfo().then(info => updateStateField(setState, "gpuInfo", info)).catch(err => setError(`Failed to fetch GPU info ${error}`));
+        GetGpuInfo().then(setGpuInfo).catch(err => setError(`Failed to fetch GPU info ${error}`));
         const command = new shell.Command("docker", "version");
         command.execute()
             .catch(err => setError("Failed to execute docker command, make sure docker is installed in your system.\n\nOpen the docker GUI and make sure it's running."))
@@ -30,7 +29,7 @@ function Trainer() {
 
     return (
         error ? <div className="h-100 trainer-error">{error}</div> :
-            <Tabs defaultActiveKey="pick_image" activeKey={state.tab} onSelect={e => updateStateField(setState, "tab", e!)}>
+            <Tabs defaultActiveKey="pick_image">
                 <Tab eventKey="pick_image" title="Pick Image">
                     <ImagePicker />
                 </Tab>
