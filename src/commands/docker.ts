@@ -7,7 +7,7 @@ import _ from "lodash";
 export class DockerCommand {
     constructor(
         private subCommand: Command,
-        private volumeMapping: Record<string, string> = {},
+        private volumeMapping: [string, string][] = [],
         private additionalArguments: string[] = [],
         private image = "smy20011/dreambooth:latest"
     ) { }
@@ -19,7 +19,7 @@ export class DockerCommand {
                 "run",
                 "-t",
                 ...this.additionalArguments,
-                ...Object.entries(this.volumeMapping).sort().map(it => `-v=${it[0]}:${it[1]}`),
+                ...this.volumeMapping.map(it => `-v=${it[0]}:${it[1]}`),
                 ...Object.entries(this.subCommand.environment ?? {}).sort().flatMap(it => ['-e', `${it[0]}=${it[1]}`]),
                 this.image,
                 this.subCommand.executable,
@@ -28,8 +28,8 @@ export class DockerCommand {
         }
     }
 
-    private static rewrite<T>(mapping: Record<string, string>, obj: T, key: keyof T, newFolder: string) {
-        mapping[obj[key] as string] = newFolder;
+    private static rewrite<T>(mapping: [string, string][], obj: T, key: keyof T, newFolder: string) {
+        mapping.push([obj[key] as string, newFolder]);
         obj[key] = newFolder as T[keyof T];
     }
 
@@ -37,7 +37,6 @@ export class DockerCommand {
         return {
             executable: '/start_training',
             arguments: [
-                command.executable,
                 ...command.arguments
             ],
             environment: command.environment
@@ -45,14 +44,14 @@ export class DockerCommand {
     }
 
     public static runDreambooth(dreambooth: Dreambooth, cacheDir: string): DockerCommand {
-        let mapping: Record<string, string> = {};
+        let mapping: [string, string][] = [];
         dreambooth = _.clone(dreambooth);
         this.rewrite(mapping, dreambooth, "instanceDir", "/instance");
         if (dreambooth.classPrompt) {
             this.rewrite(mapping, dreambooth, "classDir", "/class");
         }
         this.rewrite(mapping, dreambooth, "outputDir", "/output");
-        mapping[cacheDir] = '/train';
+        mapping.push([cacheDir, '/train']);
         return new DockerCommand(
             this.forceNewLine(dreambooth.getTrainingCommand()),
             mapping,
@@ -63,7 +62,7 @@ export class DockerCommand {
     }
 
     public static runDiffusersToCkpt(converter: Converter): DockerCommand {
-        let mapping: Record<string, string> = {};
+        let mapping: [string, string][] = [];
         converter = _.clone(converter);
         this.rewrite(mapping, converter, "source", "/source");
         this.rewrite(mapping, converter, "dest", "/dest");

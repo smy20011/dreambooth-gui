@@ -1,5 +1,6 @@
 import { dialog } from "@tauri-apps/api";
 import { useAtom } from "jotai";
+import _ from "lodash";
 import { Col, Button } from "react-bootstrap";
 import { dreamboothAtom } from "../state";
 import { useAtomForm } from "./utils";
@@ -11,7 +12,7 @@ export default function ImagePicker() {
             directory: true,
         });
         if (result != null && typeof result === 'string') {
-            bind("instanceDir").onChange(result);
+            setState(_.assign(_.clone(state), { "instanceDir": result }));
         }
     }
     return (

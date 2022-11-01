@@ -4,6 +4,7 @@ import { writeTextFile } from "@tauri-apps/api/fs";
 import { appDir, join } from "@tauri-apps/api/path";
 import { appWindow } from "@tauri-apps/api/window";
 import { useAtom, useAtomValue } from "jotai";
+import _ from "lodash";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import Converter from "../commands/convert";
@@ -81,6 +82,8 @@ export function Training() {
                 await writeTextFile(await join(state.outputDir, "trainer_config"), JSON.stringify(state));
                 if (genCkpt) {
                     let genCkptOuput: string[] = [];
+                    const command = DockerCommand.runDiffusersToCkpt(new Converter(state.outputDir, state.outputDir));
+                    console.log(command.getCommand());
                     const ret = await run(
                         DockerCommand.runDiffusersToCkpt(new Converter(state.outputDir, state.outputDir)).getCommand(),
                         l => genCkptOuput.push(l));
@@ -101,7 +104,7 @@ export function Training() {
             directory: true,
         });
         if (result != null && typeof result === 'string') {
-            bind("outputDir").onChange(result);
+            setState(_.assign(_.clone(state), { "outputDir": result }));
         }
     };
 

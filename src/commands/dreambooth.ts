@@ -100,10 +100,8 @@ export default class Dreambooth {
 
     public getTrainingCommand(): Command {
         return {
-            executable: "docker",
+            executable: "python",
             arguments: [
-                "python",
-                "-u",
                 this.scriptLocation,
                 `--pretrained_model_name_or_path=${this.model}`,
                 ...this.getInstantArguments(),

@@ -7,7 +7,7 @@ describe("TestDocker", () => {
     test("Docker volume mapping", () => {
         const dockerCommand = new DockerCommand(
             { executable: "echo", arguments: ["hello"] },
-            { "/path/to/a": "/a" }
+            [["/path/to/a", "/a"]]
         );
         expect(dockerCommand.getCommand().arguments).toEqual([
             "run", "-t", "-v=/path/to/a:/a", "smy20011/dreambooth:latest", "echo", "hello"
@@ -16,7 +16,7 @@ describe("TestDocker", () => {
     test("Docker additional arguments", () => {
         const dockerCommand = new DockerCommand(
             { executable: "echo", arguments: ["hello"] },
-            { "/path/to/a": "/a" },
+            [["/path/to/a", "/a"]],
             ["--gpu", "all"]
         );
         expect(dockerCommand.getCommand().arguments).toEqual([
@@ -27,7 +27,7 @@ describe("TestDocker", () => {
     test("Docker environment mapping", () => {
         const dockerCommand = new DockerCommand(
             { executable: "echo", arguments: ["hello"], environment: { 'HELLO': "world" } },
-            { "/path/to/a": "/a" },
+            [["/path/to/a", "/a"]],
         );
         expect(dockerCommand.getCommand().arguments).toEqual([
             "run", "-t", "-v=/path/to/a:/a", "-e", "HELLO=world", "smy20011/dreambooth:latest", "echo", "hello"
@@ -40,7 +40,7 @@ describe("TestDocker", () => {
         expect(converter.source).toEqual("/a");
         expect(converter.dest).toEqual("/b");
         expect(dockerCommand.getCommand().arguments).toEqual([
-            "run", "-t", "--gpus=all", "-v=/a:/source", "-v=/b:/dest", "smy20011/dreambooth:latest",
+            "run", "-t", "--gpus=all", "-v=/a:/source", "-v=/b:/dest", "smy20011/dreambooth:latest", "python",
             "/convert.py", "--model_path=/source", "--checkpoint_path=/dest/model.ckpt",
         ]);
     });
@@ -53,16 +53,13 @@ describe("TestDocker", () => {
             "run",
             "-t",
             "--gpus=all",
-            "-v=/cache:/train",
             "-v=/path/instance:/instance",
             "-v=/path/output:/output",
+            "-v=/cache:/train",
             "-e",
             "HUGGING_FACE_HUB_TOKEN=abc",
             "smy20011/dreambooth:latest",
             "/start_training",
-            "docker",
-            "python",
-            "-u",
             "/train_dreambooth.py",
             "--pretrained_model_name_or_path=CompVis/stable-diffusion-v1-4",
             "--instance_prompt=sks",

@@ -69,7 +69,7 @@ export default function ConfigTrainer() {
                     rows={8}
                     value={state.additionalArguments.join("\n")}
                     onChange={t => {
-                        bind("additionalArguments").onChange(t.target.value.split("\n"));
+                        setState(_.assign(_.clone(state), { "additionalArguments": t.target.value.split("\n") }));
                     }}
                 />
             </Form.Group>

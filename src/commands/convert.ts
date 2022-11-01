@@ -9,8 +9,9 @@ export default class Converter {
 
     public getDiffuserToCkptCommand(): Command {
         return {
-            executable: this.script,
+            executable: "python",
             arguments: [
+                this.script,
                 `--model_path=${this.source}`,
                 `--checkpoint_path=${this.dest}/model.ckpt`
             ]

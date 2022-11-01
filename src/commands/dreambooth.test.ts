@@ -13,8 +13,6 @@ describe('Dreambooth Test', () => {
     test('Instance prompt only training', () => {
         const command = dreambooth.getTrainingCommand();
         expect(command.arguments).toEqual([
-            "python",
-            "-u",
             "/train_dreambooth.py",
             "--pretrained_model_name_or_path=CompVis/stable-diffusion-v1-4",
             "--instance_prompt=sks",
@@ -34,8 +32,6 @@ describe('Dreambooth Test', () => {
         dreambooth.classPrompt = "class"
         const command = dreambooth.getTrainingCommand();
         expect(command.arguments).toEqual([
-            "python",
-            "-u",
             "/train_dreambooth.py",
             "--pretrained_model_name_or_path=CompVis/stable-diffusion-v1-4",
             "--instance_prompt=sks",
