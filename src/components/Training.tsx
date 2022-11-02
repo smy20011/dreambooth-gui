@@ -18,11 +18,12 @@ import { getClassDir, ensureDir, bind, updateStateField, useAtomForm } from "./u
 export function Training() {
     const [running, setRunning] = useState<boolean>(false);
     const [genCkpt, setGenCkpt] = useState<boolean>(true);
+    const [classDir, setClassDir] = useState("");
     const [lines, setLines] = useState<string[]>([]);
     const [state, setState, bind] = useAtomForm(dreamboothAtom);
     const appDir = useAtomValue(appDirAtom);
 
-    const dockerTrainCommand = DockerCommand.runDreambooth(state, appDir).getCommand();
+    const dockerTrainCommand = DockerCommand.runDreambooth(state, appDir, classDir).getCommand();
 
     const outputRef = useRef<any>();
 
@@ -30,6 +31,10 @@ export function Training() {
         const area = outputRef.current!!;
         area.scrollTop = area.scrollHeight;
     }, [lines]);
+
+    useEffect(() => {
+        getClassDir(state.classPrompt).then(setClassDir);
+    }, [state.classPrompt]);
 
     useEffect(() => {
         const unlisten = appWindow.onCloseRequested(async () => {
@@ -52,7 +57,7 @@ export function Training() {
                 return;
             }
             const dirs = [
-                await getClassDir(state.classPrompt),
+                classDir,
                 appDir,
                 state.outputDir,
             ];

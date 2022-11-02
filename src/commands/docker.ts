@@ -43,11 +43,12 @@ export class DockerCommand {
         }
     }
 
-    public static runDreambooth(dreambooth: Dreambooth, cacheDir: string): DockerCommand {
+    public static runDreambooth(dreambooth: Dreambooth, cacheDir: string, classDir?: string): DockerCommand {
         let mapping: [string, string][] = [];
         dreambooth = _.clone(dreambooth);
         this.rewrite(mapping, dreambooth, "instanceDir", "/instance");
-        if (dreambooth.classPrompt) {
+        if (dreambooth.classPrompt && classDir) {
+            dreambooth.classDir = classDir;
             this.rewrite(mapping, dreambooth, "classDir", "/class");
         }
         this.rewrite(mapping, dreambooth, "outputDir", "/output");
