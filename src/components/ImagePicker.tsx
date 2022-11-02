@@ -1,8 +1,9 @@
 import { dialog } from "@tauri-apps/api";
 import { useAtom } from "jotai";
 import _ from "lodash";
-import { Col, Button } from "react-bootstrap";
+import { Col, Button, Row } from "react-bootstrap";
 import { dreamboothAtom } from "../state";
+import Gallery from "./Gallery";
 import { useAtomForm } from "./utils";
 
 export default function ImagePicker() {
@@ -17,7 +18,12 @@ export default function ImagePicker() {
     }
     return (
         <Col className="d-flex flex-column min-vh-100 justify-content-center align-items-center">
-            <Button className="btn-primary" onClick={showDialog}>Select Training Image Folder</Button>
+            <Row className="mt-2">
+                <Button className="btn-primary" onClick={showDialog}>Select Training Image Folder</Button>
+            </Row>
+            <Row>
+                <Gallery imageDir={state.instanceDir} />
+            </Row>
         </Col>
     );
 }
