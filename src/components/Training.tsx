@@ -1,6 +1,6 @@
 import { dialog } from "@tauri-apps/api";
 import { message } from "@tauri-apps/api/dialog";
-import { writeTextFile } from "@tauri-apps/api/fs";
+import { exists, writeTextFile } from "@tauri-apps/api/fs";
 import { appDir, join } from "@tauri-apps/api/path";
 import { appWindow } from "@tauri-apps/api/window";
 import { useAtom, useAtomValue } from "jotai";
@@ -21,12 +21,16 @@ export function Training() {
     const [classDir, setClassDir] = useState("");
     const [lines, setLines] = useState<string[]>([]);
     const [state, setState, bind] = useAtomForm(dreamboothAtom);
+    const [isLocalModel, setIsLocalModel] = useState(false);
     const appDir = useAtomValue(appDirAtom);
 
-    const dockerTrainCommand = DockerCommand.runDreambooth(state, appDir, classDir).getCommand();
+    const dockerTrainCommand = DockerCommand.runDreambooth(state, appDir, classDir, isLocalModel).getCommand();
 
     const outputRef = useRef<any>();
 
+    useEffect(() => {
+        exists(state.model).then(t => setIsLocalModel(t as unknown as boolean));
+    }, [state.model]);
     useEffect(() => {
         const area = outputRef.current!!;
         area.scrollTop = area.scrollHeight;

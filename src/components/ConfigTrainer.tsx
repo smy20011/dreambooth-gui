@@ -18,7 +18,7 @@ export default function ConfigTrainer() {
             directory: true,
         });
         if (result != null && typeof result === 'string') {
-            setState(s => _.assign(s, { model: result }));
+            setState(s => _.assign(_.clone(s), { model: result }));
         }
     };
 
@@ -56,7 +56,7 @@ export default function ConfigTrainer() {
                 <Form.Control type="number" {...bind("steps")} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="class">
-                <Form.Label>Training Steps</Form.Label>
+                <Form.Label>Learning Rate</Form.Label>
                 <Form.Control type="text" {...bind("learningRate")} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="args">

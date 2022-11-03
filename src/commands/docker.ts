@@ -43,7 +43,7 @@ export class DockerCommand {
         }
     }
 
-    public static runDreambooth(dreambooth: Dreambooth, cacheDir: string, classDir?: string): DockerCommand {
+    public static runDreambooth(dreambooth: Dreambooth, cacheDir: string, classDir?: string, isLocalModel = false): DockerCommand {
         let mapping: [string, string][] = [];
         dreambooth = _.clone(dreambooth);
         this.rewrite(mapping, dreambooth, "instanceDir", "/instance");
@@ -52,6 +52,9 @@ export class DockerCommand {
             this.rewrite(mapping, dreambooth, "classDir", "/class");
         }
         this.rewrite(mapping, dreambooth, "outputDir", "/output");
+        if (isLocalModel) {
+            this.rewrite(mapping, dreambooth, "model", "/input_model");
+        }
         mapping.push([cacheDir, '/train']);
         return new DockerCommand(
             this.forceNewLine(dreambooth.getTrainingCommand()),
