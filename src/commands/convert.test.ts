@@ -6,7 +6,7 @@ test('Convert Commands', () => {
     const command = convert.getDiffuserToCkptCommand();
     expect(command.executable).toEqual("python");
     expect(command.arguments).toEqual([
-        convert.script,
+        convert.diffuserToOriginScript,
         "--model_path=/a",
         "--checkpoint_path=/b/model.ckpt",
     ]);

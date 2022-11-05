@@ -76,4 +76,17 @@ export class DockerCommand {
             ['--gpus=all'],
         );
     }
+
+    public static runCkptToDiffusers(converter: Converter): DockerCommand {
+        let mapping: [string, string][] = [];
+        converter = _.clone(converter);
+        this.rewrite(mapping, converter, "source", "/source");
+        this.rewrite(mapping, converter, "dest", "/dest");
+        return new DockerCommand(
+            converter.getCkptToDiffuserCommand(),
+            mapping,
+            ['--gpus=all'],
+        );
+    }
+
 }
