@@ -1,7 +1,7 @@
 import { dialog } from "@tauri-apps/api";
 import { useAtom, useAtomValue } from "jotai";
 import _ from "lodash";
-import { Form, InputGroup, Button } from "react-bootstrap";
+import { Form, InputGroup, Button, Row, Col } from "react-bootstrap";
 import { dreamboothAtom, gpuAtom } from "../state";
 import { bind, updateStateField, useAtomForm } from "./utils";
 
@@ -54,6 +54,18 @@ export default function ConfigTrainer() {
             <Form.Group className="mb-3" controlId="class">
                 <Form.Label>Training Steps</Form.Label>
                 <Form.Control type="number" {...bind("steps")} />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="class">
+                <Row>
+                    <Col className="sm-6">
+                        <Form.Label>Save Every # Steps</Form.Label>
+                        <Form.Control type="number" {...bind("saveInterval")} />
+                    </Col>
+                    <Col className="sm-6">
+                        <Form.Label>Start saving at # Steps</Form.Label>
+                        <Form.Control type="number" {...bind("saveMinSteps")} />
+                    </Col>
+                </Row>
             </Form.Group>
             <Form.Group className="mb-3" controlId="class">
                 <Form.Label>Learning Rate</Form.Label>

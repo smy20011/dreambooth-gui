@@ -65,9 +65,11 @@ describe("TestDocker", () => {
             "--instance_prompt=sks",
             "--instance_data_dir=/instance",
             "--max_train_steps=600",
-            "--learning_rate=1e-5",
+            "--learning_rate=6e-5",
             "--lr_scheduler=constant",
             "--lr_warmup_steps=0",
+            "--save_interval=10000",
+            "--save_min_steps=100000",
             "--resolution=512",
             "--output_dir=/output",
         ]);

@@ -53,7 +53,7 @@ export default class Dreambooth {
         // Max training steps
         public steps: number = 600,
         // Learning rate.
-        public learningRate: string = "1e-5",
+        public learningRate: string = "6e-5",
         // Model dir or name.
         public model: string = "CompVis/stable-diffusion-v1-4",
         // Model output dir
@@ -68,6 +68,10 @@ export default class Dreambooth {
         public extraTrainingArgs: string[] = [],
         // Token
         public token = "",
+        // Save every n steps
+        public saveInterval = 10000,
+        // Steps to save model
+        public saveMinSteps = 100000,
     ) { }
 
     public withGpu(gpuInfo: GpuInfo): Dreambooth {
@@ -141,6 +145,8 @@ export default class Dreambooth {
             `--learning_rate=${this.learningRate}`,
             "--lr_scheduler=constant",
             "--lr_warmup_steps=0",
+            `--save_interval=${this.saveInterval}`,
+            `--save_min_steps=${this.saveMinSteps}`,
             ...this.extraTrainingArgs
         ];
     }
