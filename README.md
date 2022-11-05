@@ -36,6 +36,13 @@ Gui supports any NVIDIA card with >10GB VRAM.
 
     Make sure the instance image folder only have image.
 
+3. I have other questions!
+
+    Please use the [discussion](https://github.com/smy20011/dreambooth-gui/discussions) page for Q&A.
+
+    I will convert FAQs to a bug if necessary. I perfer to keep the issue section clean but keep getting questions 
+    that I answered before.
+
 
 ## Roadmap
 
