@@ -95,6 +95,7 @@ export function Training() {
                         // Tauri are planning to add such a API, refactor it later.
                         if (f.name?.match(/\d+/) && f.name !== "0") {
                             let genCkptOuput: string[] = [];
+                            setLines(line => line.concat(`Converting model in ${f.path} to ckpt.`))
                             const ret = await run(
                                 DockerCommand.runDiffusersToCkpt(new Converter(f.path, f.path)).getCommand(),
                                 l => genCkptOuput.push(l));
