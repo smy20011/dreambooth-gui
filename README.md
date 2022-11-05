@@ -56,3 +56,7 @@ Gui supports any NVIDIA card with >10GB VRAM.
     - [X] Create a dialog when training finished.
     - [ ] Progress bar.
 - [X] Support model converstion.
+
+## Additional Resources
+
+1. Someone in japan write a [doc](https://gigazine.net/gsc_news/en/20221103-dreambooth-gui/) regarding how to use it.
