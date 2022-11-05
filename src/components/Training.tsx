@@ -1,6 +1,6 @@
 import { dialog } from "@tauri-apps/api";
 import { message } from "@tauri-apps/api/dialog";
-import { exists, writeTextFile } from "@tauri-apps/api/fs";
+import { exists, readDir, writeTextFile } from "@tauri-apps/api/fs";
 import { appDir, join } from "@tauri-apps/api/path";
 import { appWindow } from "@tauri-apps/api/window";
 import { useAtom, useAtomValue } from "jotai";
@@ -90,14 +90,18 @@ export function Training() {
                 }
                 await writeTextFile(await join(state.outputDir, "trainer_config"), JSON.stringify(state));
                 if (genCkpt) {
-                    let genCkptOuput: string[] = [];
-                    const command = DockerCommand.runDiffusersToCkpt(new Converter(state.outputDir, state.outputDir));
-                    console.log(command.getCommand());
-                    const ret = await run(
-                        DockerCommand.runDiffusersToCkpt(new Converter(state.outputDir, state.outputDir)).getCommand(),
-                        l => genCkptOuput.push(l));
-                    if (ret != 0) {
-                        await message(`Failed to convert model, output: ${genCkptOuput.join("\n")}`);
+                    for (const f of await readDir(state.outputDir)) {
+                        // TODO: We still don't have a good API to check whether or not the f is a dir.
+                        // Tauri are planning to add such a API, refactor it later.
+                        if (f.name?.match(/\d+/) && f.name !== "0") {
+                            let genCkptOuput: string[] = [];
+                            const ret = await run(
+                                DockerCommand.runDiffusersToCkpt(new Converter(f.path, f.path)).getCommand(),
+                                l => genCkptOuput.push(l));
+                            if (ret != 0) {
+                                await message(`Failed to convert model, output: ${genCkptOuput.join("\n")}`);
+                            }
+                        }
                     }
                 }
                 setRunning(false);
