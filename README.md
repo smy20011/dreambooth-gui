@@ -35,8 +35,12 @@ Gui supports any NVIDIA card with >10GB VRAM.
 2. PIL.UnidentifiedImageEnnon: cannot identify image file
 
     Make sure the instance image folder only have image.
+    
+3. Read-only file system error
 
-3. I have other questions!
+   Make sure you have enough space in C(or home folder) before running the Gui.
+
+4. I have other questions!
 
     Please use the [discussion](https://github.com/smy20011/dreambooth-gui/discussions) page for Q&A.
 
