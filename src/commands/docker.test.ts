@@ -10,7 +10,7 @@ describe("TestDocker", () => {
             [["/path/to/a", "/a"]]
         );
         expect(dockerCommand.getCommand().arguments).toEqual([
-            "run", "-t", "-v=/path/to/a:/a", "smy20011/dreambooth:latest", "echo", "hello"
+            "run", "--rm", "-t", "--pull", "always", "-v=/path/to/a:/a", "smy20011/dreambooth:v0.1.9", "echo", "hello"
         ]);
     });
     test("Docker additional arguments", () => {
@@ -20,7 +20,7 @@ describe("TestDocker", () => {
             ["--gpu", "all"]
         );
         expect(dockerCommand.getCommand().arguments).toEqual([
-            "run", "-t", "--gpu", "all", "-v=/path/to/a:/a", "smy20011/dreambooth:latest", "echo", "hello"
+            "run", "--rm", "-t", "--pull", "always", "--gpu", "all", "-v=/path/to/a:/a", "smy20011/dreambooth:v0.1.9", "echo", "hello"
         ]);
     });
 
@@ -30,7 +30,7 @@ describe("TestDocker", () => {
             [["/path/to/a", "/a"]],
         );
         expect(dockerCommand.getCommand().arguments).toEqual([
-            "run", "-t", "-v=/path/to/a:/a", "-e", "HELLO=world", "smy20011/dreambooth:latest", "echo", "hello"
+            "run", "--rm", "-t", "--pull", "always", "-v=/path/to/a:/a", "-e", "HELLO=world", "smy20011/dreambooth:v0.1.9", "echo", "hello"
         ]);
     });
 
@@ -40,7 +40,7 @@ describe("TestDocker", () => {
         expect(converter.source).toEqual("/a");
         expect(converter.dest).toEqual("/b");
         expect(dockerCommand.getCommand().arguments).toEqual([
-            "run", "-t", "--gpus=all", "-v=/a:/source", "-v=/b:/dest", "smy20011/dreambooth:latest", "python",
+            "run", "--rm", "-t", "--pull", "always", "--gpus=all", "-v=/a:/source", "-v=/b:/dest", "smy20011/dreambooth:v0.1.9", "python",
             "/convert.py", "--model_path=/source", "--checkpoint_path=/dest/model.ckpt",
         ]);
     });
@@ -51,21 +51,24 @@ describe("TestDocker", () => {
         dreambooth.token = "abc";
         expect(DockerCommand.runDreambooth(dreambooth, "/cache").getCommand().arguments).toEqual([
             "run",
+            "--rm",
             "-t",
+            "--pull",
+            "always",
             "--gpus=all",
             "-v=/path/instance:/instance",
             "-v=/path/output:/output",
             "-v=/cache:/train",
             "-e",
             "HUGGING_FACE_HUB_TOKEN=abc",
-            "smy20011/dreambooth:latest",
+            "smy20011/dreambooth:v0.1.9",
             "/start_training",
             "/train_dreambooth.py",
             "--pretrained_model_name_or_path=CompVis/stable-diffusion-v1-4",
             "--instance_prompt=sks",
             "--instance_data_dir=/instance",
             "--max_train_steps=600",
-            "--learning_rate=6e-5",
+            "--learning_rate=5e-6",
             "--lr_scheduler=constant",
             "--lr_warmup_steps=0",
             "--save_interval=10000",

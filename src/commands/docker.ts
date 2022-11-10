@@ -18,6 +18,7 @@ export class DockerCommand {
             executable: "docker",
             arguments: [
                 "run",
+                "--rm",
                 "-t",
                 ...this.getPullingArguments(),
                 ...this.additionalArguments,
