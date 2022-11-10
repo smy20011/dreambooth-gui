@@ -3,6 +3,8 @@
 Provides a easy-to-use gui for users to train Dreambooth with custom images. This
 Gui supports any NVIDIA card with >10GB VRAM.
 
+![BuildStatus](https://github.com/smy20011/dreambooth-gui/actions/workflows/test.yaml/badge.svg)
+
 ## Highlights
 
 1. Automatically decide training params that fit your available VRAM.
