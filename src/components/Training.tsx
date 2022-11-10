@@ -3,42 +3,50 @@ import { message } from "@tauri-apps/api/dialog";
 import { exists, readDir, writeTextFile } from "@tauri-apps/api/fs";
 import { appDir, join } from "@tauri-apps/api/path";
 import { appWindow } from "@tauri-apps/api/window";
-import { useAtom, useAtomValue } from "jotai";
+import { atom, useAtom, useAtomValue } from "jotai";
 import _ from "lodash";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import Converter from "../commands/convert";
 import { DockerCommand } from "../commands/docker";
-import { run } from "../commands/runner";
+import Dreambooth from "../commands/dreambooth";
+import { Command, run } from "../commands/runner";
 import { killDocker } from "../docker";
 import { appDirAtom, dreamboothAtom } from "../state";
-import { getClassDir, ensureDir, bind, updateStateField, useAtomForm } from "./utils";
+import { getClassDir, ensureDir, bind, updateStateField, useAtomForm, asyncAtomWithCache } from "./utils";
 
+const trainingCommandAtom = atom(async (get) => {
+    let db = get(dreamboothAtom);
+    const isLocalModel = await exists(db.model) as unknown as boolean;
+    const appDir = get(appDirAtom);
+    const classDir = await getClassDir(db.classPrompt);
+    let commands = [];
+    if (isLocalModel) {
+        const model_dir = db.model.replace(".ckpt", "");
+        commands.push(DockerCommand.runCkptToDiffusers(new Converter(db.model, model_dir)).getCommand());
+        db = db.with({ model: model_dir });
+    }
+    return [
+        ...commands,
+        DockerCommand.runDreambooth(db, appDir, classDir, isLocalModel).getCommand()
+    ];
+});
+
+const cachedTrainingCommandAtom = asyncAtomWithCache(trainingCommandAtom, []);
 
 export function Training() {
     const [running, setRunning] = useState<boolean>(false);
     const [genCkpt, setGenCkpt] = useState<boolean>(true);
-    const [classDir, setClassDir] = useState("");
     const [lines, setLines] = useState<string[]>([]);
     const [state, setState, bind] = useAtomForm(dreamboothAtom);
-    const [isLocalModel, setIsLocalModel] = useState(false);
-    const appDir = useAtomValue(appDirAtom);
-
-    const dockerTrainCommand = DockerCommand.runDreambooth(state, appDir, classDir, isLocalModel).getCommand();
+    const dockerTrainCommand = useAtomValue(cachedTrainingCommandAtom);
 
     const outputRef = useRef<any>();
 
     useEffect(() => {
-        exists(state.model).then(t => setIsLocalModel(t as unknown as boolean));
-    }, [state.model]);
-    useEffect(() => {
         const area = outputRef.current!!;
         area.scrollTop = area.scrollHeight;
     }, [lines]);
-
-    useEffect(() => {
-        getClassDir(state.classPrompt).then(setClassDir);
-    }, [state.classPrompt]);
 
     useEffect(() => {
         const unlisten = appWindow.onCloseRequested(async () => {
@@ -61,8 +69,8 @@ export function Training() {
                 return;
             }
             const dirs = [
-                classDir,
-                appDir,
+                await getClassDir(state.classDir),
+                await appDir(),
                 state.outputDir,
             ];
 
@@ -80,13 +88,15 @@ export function Training() {
             try {
                 setRunning(true);
                 setLines([]);
-                const ret = await run(
-                    dockerTrainCommand,
-                    line => setLines(list => list.concat(line)));
-                if (ret != 0) {
-                    await message(`Failed to train model, see output for detailed error.`);
-                    setRunning(false);
-                    return;
+                for (const command of dockerTrainCommand) {
+                    const ret = await run(
+                        command,
+                        line => setLines(list => list.concat(line)));
+                    if (ret != 0) {
+                        await message(`Failed to train model, see output for detailed error.`);
+                        setRunning(false);
+                        return;
+                    }
                 }
                 await writeTextFile(await join(state.outputDir, "trainer_config"), JSON.stringify(state));
                 if (genCkpt) {
@@ -143,7 +153,7 @@ export function Training() {
             <Form.Group className="mb-3" controlId="args">
                 <div><Form.Label>Training Command</Form.Label></div>
                 <Form.Control as="textarea" rows={1}
-                    value={`${dockerTrainCommand.executable} ${dockerTrainCommand.arguments.join(" ")}`} disabled />
+                    value={dockerTrainCommand.map(c => `${c.executable} ${c.arguments.join(" ")}`).join("\n")} disabled />
             </Form.Group>
             <Form.Group className="mb-3" controlId="args">
                 <div><Form.Label>Training Output</Form.Label></div>

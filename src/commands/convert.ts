@@ -25,7 +25,7 @@ export default class Converter {
             arguments: [
                 this.originToDiffuerScript,
                 `--checkpoint_path=${this.source}`,
-                `--dump_path=${this.dest}/model.ckpt`
+                `--dump_path=${this.dest}`
             ]
         };
     }

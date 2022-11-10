@@ -9,7 +9,8 @@ export class DockerCommand {
         private subCommand: Command,
         private volumeMapping: [string, string][] = [],
         private additionalArguments: string[] = [],
-        private image = "smy20011/dreambooth:v0.1.9"
+        private image = "smy20011/dreambooth:v0.1.9",
+        private alwaysPull = true,
     ) { }
 
     public getCommand(): Command {
@@ -18,6 +19,7 @@ export class DockerCommand {
             arguments: [
                 "run",
                 "-t",
+                ...this.getPullingArguments(),
                 ...this.additionalArguments,
                 ...this.volumeMapping.map(it => `-v=${it[0]}:${it[1]}`),
                 ...Object.entries(this.subCommand.environment ?? {}).sort().flatMap(it => ['-e', `${it[0]}=${it[1]}`]),
@@ -26,6 +28,13 @@ export class DockerCommand {
                 ...this.subCommand.arguments
             ]
         }
+    }
+
+    private getPullingArguments(): string[] {
+        if (this.alwaysPull) {
+            return ["--pull", "always"];
+        }
+        return [];
     }
 
     private static rewrite<T>(mapping: [string, string][], obj: T, key: keyof T, newFolder: string) {
@@ -80,12 +89,13 @@ export class DockerCommand {
     public static runCkptToDiffusers(converter: Converter): DockerCommand {
         let mapping: [string, string][] = [];
         converter = _.clone(converter);
-        this.rewrite(mapping, converter, "source", "/source");
         this.rewrite(mapping, converter, "dest", "/dest");
+        let source = converter.source;
+        converter.source = "/source.ckpt";
         return new DockerCommand(
             converter.getCkptToDiffuserCommand(),
             mapping,
-            ['--gpus=all'],
+            ['--gpus=all', "--mount", `type=bind,source=${source},target=/source.ckpt`],
         );
     }
 

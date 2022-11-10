@@ -53,7 +53,7 @@ export default class Dreambooth {
         // Max training steps
         public steps: number = 600,
         // Learning rate.
-        public learningRate: string = "6e-5",
+        public learningRate: string = "5e-6",
         // Model dir or name.
         public model: string = "CompVis/stable-diffusion-v1-4",
         // Model output dir
@@ -78,6 +78,10 @@ export default class Dreambooth {
         let newDb = _.clone(this);
         newDb.additionalArguments = pickTrainingArgs(gpuInfo);
         return newDb;
+    }
+
+    public with(update: Partial<Record<keyof Dreambooth, unknown>>): Dreambooth {
+        return _.assign(_.clone(this), update);
     }
 
     public verifyState(): string {

@@ -1,21 +1,25 @@
 import { dialog } from "@tauri-apps/api";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import _ from "lodash";
 import { Form, InputGroup, Button, Row, Col } from "react-bootstrap";
-import { dreamboothAtom, gpuAtom } from "../state";
+import { dreamboothAtom, gpuAtom, updateClassPromptAtom } from "../state";
 import { bind, updateStateField, useAtomForm } from "./utils";
 
 export default function ConfigTrainer() {
     const GIB = 1024 * 1024 * 1024;
     const [state, setState, bind] = useAtomForm(dreamboothAtom);
     const gpuInfo = useAtomValue(gpuAtom);
+    const setClassPrompt = useSetAtom(updateClassPromptAtom);
 
     if (!gpuInfo) {
         return <div>Cannot find your GPU infomation.</div>
     }
     const selectModelFolder = async () => {
         const result = await dialog.open({
-            directory: true,
+            filters: [{
+                name: "Model Checkpoint",
+                extensions: ["ckpt"],
+            }]
         });
         if (result != null && typeof result === 'string') {
             setState(s => _.assign(_.clone(s), { model: result }));
@@ -46,7 +50,11 @@ export default function ConfigTrainer() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="class">
                 <Form.Label>Class prompt</Form.Label>
-                <Form.Control type="text" {...bind("classPrompt")} />
+                <Form.Control type="text" value={state.classPrompt} onChange={
+                    (t) => {
+                        setClassPrompt(t.target.value);
+                    }
+                } />
                 <Form.Text className="text-muted">
                     If you want training with prior-preservation loss, set the class prompt. (Eg, a person)
                 </Form.Text>

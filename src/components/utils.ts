@@ -1,8 +1,10 @@
 import { exists, createDir } from "@tauri-apps/api/fs";
 import { join, appDir } from "@tauri-apps/api/path";
-import { Atom, SetStateAction, useAtom } from "jotai";
+import { Atom, SetStateAction, useAtom, atom } from "jotai";
 import { PrimitiveAtom, SetAtom } from "jotai/core/atom";
+import { loadable } from "jotai/utils"
 import _ from "lodash";
+
 
 export function updateStateField<T>(setState: (update: SetStateAction<T>) => void, name: keyof T, value: any) {
     setState(s => _.assign(_.clone(s), { [name]: value }));
@@ -20,6 +22,18 @@ export function useAtomForm<Value>(atom: PrimitiveAtom<Value>): [Value, SetAtom<
     return [
         state, setState, (name: keyof Value) => bind(state, setState, name)
     ]
+}
+
+export function asyncAtomWithCache<Value>(orig: Atom<Promise<Value>>, defaultValue: Value): Atom<Value> {
+    const loadableAtom = loadable(orig);
+    let cache = [defaultValue];
+    return atom((get) => {
+        const value = get(loadableAtom);
+        if (value.state == "hasData") {
+            cache[0] = value.data;
+        }
+        return cache[0];
+    });
 }
 
 export async function getClassDir(prompt: string | undefined) {
