@@ -10,7 +10,7 @@ describe("TestDocker", () => {
             [["/path/to/a", "/a"]]
         );
         expect(dockerCommand.getCommand().arguments).toEqual([
-            "run", "--rm", "-t", "--pull", "always", "-v=/path/to/a:/a", "smy20011/dreambooth:v0.1.9", "echo", "hello"
+            "run", "--rm", "-t", "--pull", "always", "-v=/path/to/a:/a", "smy20011/dreambooth:v0.1.10", "echo", "hello"
         ]);
     });
     test("Docker additional arguments", () => {
@@ -20,7 +20,7 @@ describe("TestDocker", () => {
             ["--gpu", "all"]
         );
         expect(dockerCommand.getCommand().arguments).toEqual([
-            "run", "--rm", "-t", "--pull", "always", "--gpu", "all", "-v=/path/to/a:/a", "smy20011/dreambooth:v0.1.9", "echo", "hello"
+            "run", "--rm", "-t", "--pull", "always", "--gpu", "all", "-v=/path/to/a:/a", "smy20011/dreambooth:v0.1.10", "echo", "hello"
         ]);
     });
 
@@ -30,7 +30,7 @@ describe("TestDocker", () => {
             [["/path/to/a", "/a"]],
         );
         expect(dockerCommand.getCommand().arguments).toEqual([
-            "run", "--rm", "-t", "--pull", "always", "-v=/path/to/a:/a", "-e", "HELLO=world", "smy20011/dreambooth:v0.1.9", "echo", "hello"
+            "run", "--rm", "-t", "--pull", "always", "-v=/path/to/a:/a", "-e", "HELLO=world", "smy20011/dreambooth:v0.1.10", "echo", "hello"
         ]);
     });
 
@@ -40,7 +40,7 @@ describe("TestDocker", () => {
         expect(converter.source).toEqual("/a");
         expect(converter.dest).toEqual("/b");
         expect(dockerCommand.getCommand().arguments).toEqual([
-            "run", "--rm", "-t", "--pull", "always", "--gpus=all", "-v=/a:/source", "-v=/b:/dest", "smy20011/dreambooth:v0.1.9", "python",
+            "run", "--rm", "-t", "--pull", "always", "--gpus=all", "-v=/a:/source", "-v=/b:/dest", "smy20011/dreambooth:v0.1.10", "python",
             "/convert.py", "--model_path=/source", "--checkpoint_path=/dest/model.ckpt",
         ]);
     });
@@ -61,7 +61,7 @@ describe("TestDocker", () => {
             "-v=/cache:/train",
             "-e",
             "HUGGING_FACE_HUB_TOKEN=abc",
-            "smy20011/dreambooth:v0.1.9",
+            "smy20011/dreambooth:v0.1.10",
             "/start_training",
             "/train_dreambooth.py",
             "--pretrained_model_name_or_path=CompVis/stable-diffusion-v1-4",
