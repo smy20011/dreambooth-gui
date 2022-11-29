@@ -5,6 +5,14 @@ Gui supports any NVIDIA card with >10GB VRAM.
 
 ![BuildStatus](https://github.com/smy20011/dreambooth-gui/actions/workflows/test.yaml/badge.svg)
 
+## Screenshots
+
+![203261990-a1920337-1687-4503-84bd-ffcd599d3c42](https://user-images.githubusercontent.com/1560175/204433541-28882839-4e55-4a11-b732-210ece68a213.jpg)
+![203261994-f541593a-65e1-4a4e-9acc-6a05d5ce310d](https://user-images.githubusercontent.com/1560175/204433550-f4d73012-4cc3-4812-b3dc-e171195dd6fe.jpg)
+![203261997-cc3c8456-a7fc-4162-b4fd-d953b4c5fbcd](https://user-images.githubusercontent.com/1560175/204433559-9aacdd94-32c1-445b-8fdc-6aa03a8a67a0.jpg)
+
+
+
 ## Highlights
 
 1. Automatically decide training params that fit your available VRAM.
