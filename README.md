@@ -49,8 +49,12 @@ Gui supports any NVIDIA card with >10GB VRAM.
 3. Read-only file system error
 
    Make sure you have enough space in C(or home folder) before running the Gui.
+   
+4. Train with SD v2
 
-4. I have other questions!
+   Training with SD v2 is supported. However, you need to type `stabilityai/stable-diffusion-2` as model name. Local v2 training is not supported right now.
+
+5. I have other questions!
 
     Please use the [discussion](https://github.com/smy20011/dreambooth-gui/discussions) page for Q&A.
 
@@ -63,7 +67,7 @@ Gui supports any NVIDIA card with >10GB VRAM.
 - [X] Refactor the state management.
 - [X] Better error handling to cover FAQs.
 - [ ] Allow advanced customization
-    - [ ] Load local model.
+    - [X] Load local model.
     - [ ] Save/Load config for users.
     - [ ] Save model / pics in places other than $APP_DIR
 - [ ] Better training progress report.
