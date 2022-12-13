@@ -87,10 +87,11 @@ export class DockerCommand {
         );
     }
 
-    public static runCkptToDiffusers(converter: Converter): DockerCommand {
+    public static runCkptToDiffusers(converter: Converter, cacheDir: string): DockerCommand {
         let mapping: [string, string][] = [];
         converter = _.clone(converter);
         this.rewrite(mapping, converter, "dest", "/dest");
+        mapping.push([cacheDir, '/train']);
         let source = converter.source;
         converter.source = "/source.ckpt";
         return new DockerCommand(

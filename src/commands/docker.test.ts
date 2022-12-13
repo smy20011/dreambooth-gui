@@ -44,6 +44,30 @@ describe("TestDocker", () => {
             "/convert.py", "--model_path=/source", "--checkpoint_path=/dest/model.ckpt",
         ]);
     });
+    test("Docker run ckpt to diffusers", () => {
+        let converter = new Converter("/a", "/b", "/convert.py")
+        const dockerCommand = DockerCommand.runCkptToDiffusers(converter, '/cache');
+        expect(converter.source).toEqual("/a");
+        expect(converter.dest).toEqual("/b");
+        expect(dockerCommand.getCommand().arguments).toEqual([
+            "run",
+            "--rm",
+            "-t",
+            "--pull",
+            "always",
+            "--gpus=all",
+            "--mount",
+            "type=bind,source=/a,target=/source.ckpt",
+            "-v=/b:/dest",
+            "-v=/cache:/train",
+            "smy20011/dreambooth:v0.1.10",
+            "python",
+            "/diffusers/scripts/convert_original_stable_diffusion_to_diffusers.py",
+            "--checkpoint_path=/source.ckpt",
+            "--dump_path=/dest",
+        ]);
+    });
+
     test("Docker run dreambooth training", () => {
         let dreambooth = new Dreambooth("sks", "");
         dreambooth.instanceDir = "/path/instance";
