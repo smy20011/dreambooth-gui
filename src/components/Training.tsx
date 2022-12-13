@@ -23,7 +23,7 @@ const trainingCommandAtom = atom(async (get) => {
     let commands = [];
     if (isLocalModel) {
         const model_dir = db.model.replace(".ckpt", "");
-        commands.push(DockerCommand.runCkptToDiffusers(new Converter(db.model, model_dir)).getCommand());
+        commands.push(DockerCommand.runCkptToDiffusers(new Converter(db.model, model_dir), appDir).getCommand());
         db = db.with({ model: model_dir });
     }
     return [
